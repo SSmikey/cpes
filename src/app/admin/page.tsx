@@ -71,11 +71,10 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#e0e7ff] via-[#f0f4ff] to-[#e8eaff] font-sans selection:bg-indigo-100 selection:text-indigo-900 pb-20 flex flex-col items-center">
-      <div className="w-full">
-        <AdminNav />
-      </div>
+      <AdminNav />
 
-      <main className="p-4 md:p-8 w-full max-w-7xl space-y-8">
+
+      <div className="pt-6 px-4 md:px-12 max-w-7xl mx-auto w-full space-y-8">
 
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pt-8 pb-4">
@@ -151,11 +150,11 @@ export default function AdminDashboard() {
                     <table className="w-full border-separate border-spacing-y-3">
                       <thead>
                         <tr className="text-[11px] font-bold text-indigo-300 uppercase tracking-widest">
-                          <th className="px-8 py-3 text-left w-24">Rank</th>
-                          <th className="px-8 py-3 text-left">Team / Project Name</th>
-                          <th className="px-8 py-3 text-center w-36">Evaluators</th>
-                          <th className="px-8 py-3 text-center w-36">Mean Score</th>
-                          <th className="px-8 py-3 text-center w-36">Standard Div.</th>
+                          <th className="px-8 py-3 text-center w-32">Rank</th>
+                          <th className="px-12 py-3 text-left">Team / Project Name</th>
+                          <th className="px-8 py-3 text-center w-40">Evaluators</th>
+                          <th className="px-8 py-3 text-center w-40">Mean Score</th>
+                          <th className="px-8 py-3 text-center w-40">Standard Div.</th>
                           <th className="w-12"></th>
                         </tr>
                       </thead>
@@ -168,7 +167,7 @@ export default function AdminDashboard() {
                               ${expandedProject === row.project_id ? 'scale-[1.01] z-10' : 'hover:scale-[1.005] hover:-translate-y-0.5 z-0'}
                             `}
                             >
-                              <td className="bg-white rounded-l-lg py-5 px-8 border-y border-l border-indigo-50/50 shadow-sm group-hover:shadow-indigo-100/50 transition-all">
+                              <td className="bg-white rounded-l-lg py-5 px-8 border-y border-l border-indigo-50/50 shadow-sm group-hover:shadow-indigo-100/50 transition-all text-center">
                                 <div className={`
                                 size-12 rounded-lg flex items-center justify-center font-black text-xl shadow-inner
                                 ${row.rank === 1 ? 'bg-amber-100 text-amber-500 ring-4 ring-amber-50 ring-offset-2' :
@@ -179,7 +178,7 @@ export default function AdminDashboard() {
                                   {row.rank}
                                 </div>
                               </td>
-                              <td className="bg-white py-5 px-8 border-y border-indigo-50/50 shadow-sm group-hover:shadow-indigo-100/50 transition-all">
+                              <td className="bg-white py-5 px-12 border-y border-indigo-50/50 shadow-sm group-hover:shadow-indigo-100/50 transition-all">
                                 <span className="font-bold text-slate-700 text-lg group-hover:text-indigo-700 transition-colors">{row.project_name}</span>
                               </td>
                               <td className="bg-white py-5 px-8 text-center border-y border-indigo-50/50 shadow-sm group-hover:shadow-indigo-100/50 transition-all">
@@ -261,7 +260,7 @@ export default function AdminDashboard() {
 
             {/* Student Monitoring Section */}
             <section className="bg-white/70 backdrop-blur-2xl rounded-xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
-              <div className="px-8 py-8 border-b border-indigo-50/50 flex items-center justify-between bg-white/40">
+              <div className="px-12 py-8 border-b border-indigo-50/50 flex items-center justify-between bg-white/40">
                 <div className="flex items-center gap-4">
                   <div className="bg-blue-50 p-3 rounded-lg border border-blue-100/50">
                     <UsersIcon className="size-6 text-blue-600" />
@@ -291,7 +290,7 @@ export default function AdminDashboard() {
                     <table className="w-full">
                       <thead className="bg-slate-50/80 border-b border-slate-100">
                         <tr className="text-[11px] font-bold text-indigo-300 uppercase tracking-widest">
-                          <th className="px-8 py-5 text-left w-32">ID</th>
+                          <th className="px-12 py-5 text-left w-32">ID</th>
                           <th className="px-6 py-5 text-left">Student Name</th>
                           <th className="px-6 py-5 text-left">Team</th>
                           <th className="px-6 py-5 text-center">Evaluated</th>
@@ -305,7 +304,7 @@ export default function AdminDashboard() {
                           const isComplete = s.complete;
                           return (
                             <tr key={s.student_id} className="hover:bg-indigo-50/30 transition-colors group">
-                              <td className="px-8 py-5 text-sm font-mono text-slate-500 font-medium">{s.student_id}</td>
+                              <td className="px-12 py-5 text-sm font-mono text-slate-500 font-medium">{s.student_id}</td>
                               <td className="px-6 py-5">
                                 <span className="font-bold text-slate-700 text-base">{s.name}</span>
                               </td>
@@ -332,7 +331,7 @@ export default function AdminDashboard() {
                                   <span className="text-[10px] font-bold text-slate-400">{Math.round(progress)}%</span>
                                 </div>
                               </td>
-                              <td className="px-8 py-5 text-right">
+                              <td className="px-12 py-5 text-right">
                                 {isComplete ? (
                                   <div className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-lg border border-emerald-100/50 shadow-sm">
                                     <CheckCircle2Icon className="size-3.5 fill-emerald-100" />
@@ -370,7 +369,7 @@ export default function AdminDashboard() {
             </div>
           </div>
         )}
-      </main>
+      </div>
     </div>
   );
 }

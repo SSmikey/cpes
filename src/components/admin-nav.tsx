@@ -12,8 +12,8 @@ export function AdminNav() {
   ];
 
   return (
-    <div className="pt-6 px-4 md:px-8 max-w-7xl mx-auto w-full">
-      <nav className="bg-white/80 backdrop-blur-xl rounded-2xl border border-white/60 shadow-lg shadow-indigo-100/20 h-20 px-6 flex items-center justify-between relative z-50">
+    <div className="w-full bg-white/80 backdrop-blur-xl border-b border-indigo-50/50 shadow-sm sticky top-0 z-50">
+      <nav className="max-w-[1920px] mx-auto h-20 px-6 md:px-12 flex items-center justify-between">
         <div className="flex items-center gap-8">
           {/* Logo Section */}
           <Link href="/admin" className="flex items-center hover:opacity-90 transition-opacity">
@@ -38,8 +38,8 @@ export function AdminNav() {
                   key={link.href}
                   href={link.href}
                   className={`text-sm transition-all duration-200 ${isActive
-                      ? "font-bold text-slate-900 scale-105"
-                      : "font-medium text-slate-500 hover:text-indigo-600"
+                    ? "font-bold text-slate-900 scale-105"
+                    : "font-medium text-slate-500 hover:text-indigo-600"
                     }`}
                 >
                   {link.label}
