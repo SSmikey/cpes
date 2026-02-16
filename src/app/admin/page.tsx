@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Fragment } from "react";
 import type { EvaluationForm, ProjectStat, StudentMonitor } from "@/types";
+import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { AdminNav } from "@/components/admin-nav";
 import { Button } from "@/components/ui/button";
 import {
@@ -131,12 +132,21 @@ export default function AdminDashboard() {
                       <Fragment key={row.project_id}>
                         <TableRow
                           key={row.project_id}
-                          className="cursor-pointer hover:bg-muted/50"
+                          tabIndex={0}
+                          role="button"
+                          aria-expanded={expandedProject === row.project_id}
+                          className="cursor-pointer hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
                           onClick={() =>
                             setExpandedProject(
                               expandedProject === row.project_id ? null : row.project_id
                             )
                           }
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              setExpandedProject(expandedProject === row.project_id ? null : row.project_id);
+                            }
+                          }}
                         >
                           <TableCell>
                             <span
@@ -162,8 +172,10 @@ export default function AdminDashboard() {
                             {row.overall_sd.toFixed(2)}
                           </TableCell>
                           <TableCell className="text-right">
-                            <span className="text-xs text-muted-foreground">
-                              {expandedProject === row.project_id ? "▲ ซ่อน" : "▼ รายข้อ"}
+                            <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                              {expandedProject === row.project_id
+                                ? <><ChevronUpIcon className="size-3.5" />ซ่อน</>
+                                : <><ChevronDownIcon className="size-3.5" />รายข้อ</>}
                             </span>
                           </TableCell>
                         </TableRow>

@@ -50,6 +50,14 @@ export default function FormManagement() {
   const [newFormError, setNewFormError] = useState("");
   const [saving, setSaving] = useState(false);
 
+  // Deadline saved feedback
+  const [deadlineSaved, setDeadlineSaved] = useState<string | null>(null);
+
+  // Clone dialog
+  const [cloneDialog, setCloneDialog] = useState<{ formId: string; sourceTitle: string } | null>(null);
+  const [cloneTitle, setCloneTitle] = useState("");
+  const [cloning, setCloning] = useState(false);
+
   // Edit question inline
   const [editingQuestion, setEditingQuestion] = useState<{
     formId: string;
@@ -78,14 +86,22 @@ export default function FormManagement() {
     await loadForms();
   };
 
-  const handleClone = async (formId: string, sourceTitle: string) => {
-    const title = prompt(`ชื่อ form ใหม่:`, `${sourceTitle} (copy)`);
-    if (!title) return;
-    await fetch(`/api/forms/${formId}/clone`, {
+  const handleClone = (formId: string, sourceTitle: string) => {
+    setCloneTitle(`${sourceTitle} (copy)`);
+    setCloneDialog({ formId, sourceTitle });
+  };
+
+  const handleConfirmClone = async () => {
+    if (!cloneDialog || !cloneTitle.trim()) return;
+    setCloning(true);
+    await fetch(`/api/forms/${cloneDialog.formId}/clone`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title }),
+      body: JSON.stringify({ title: cloneTitle.trim() }),
     });
+    setCloning(false);
+    setCloneDialog(null);
+    setCloneTitle("");
     await loadForms();
   };
 
@@ -156,6 +172,8 @@ export default function FormManagement() {
       body: JSON.stringify({ deadline: deadline || null }),
     });
     await loadForms();
+    setDeadlineSaved(form.form_id);
+    setTimeout(() => setDeadlineSaved(null), 2000);
   };
 
   if (loading) {
@@ -261,6 +279,9 @@ export default function FormManagement() {
                         ลบ deadline
                       </Button>
                     )}
+                    {deadlineSaved === form.form_id && (
+                      <span className="text-xs text-green-600 font-medium">บันทึกแล้ว ✓</span>
+                    )}
                   </div>
 
                   {/* Questions table */}
@@ -355,6 +376,32 @@ export default function FormManagement() {
           ))
         )}
       </div>
+
+      {/* Clone Dialog */}
+      <Dialog open={!!cloneDialog} onOpenChange={(open) => { if (!open) { setCloneDialog(null); setCloneTitle(""); } }}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Clone แบบประเมิน</DialogTitle>
+            <DialogDescription>ตั้งชื่อสำหรับแบบประเมินที่จะ clone</DialogDescription>
+          </DialogHeader>
+          <div className="py-2 space-y-1.5">
+            <Label htmlFor="clone-title">ชื่อแบบประเมินใหม่</Label>
+            <Input
+              id="clone-title"
+              value={cloneTitle}
+              onChange={(e) => setCloneTitle(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") handleConfirmClone(); }}
+              autoFocus
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setCloneDialog(null); setCloneTitle(""); }}>ยกเลิก</Button>
+            <Button onClick={handleConfirmClone} disabled={cloning || !cloneTitle.trim()}>
+              {cloning ? "กำลัง clone..." : "Clone"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* New Form Dialog */}
       <Dialog open={showNewForm} onOpenChange={setShowNewForm}>

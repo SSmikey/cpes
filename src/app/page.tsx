@@ -117,45 +117,52 @@ export default function StudentPage() {
   // --- REGISTER STEP ---
   if (step === "register") {
     return (
-      <div className="min-h-screen bg-muted/40 flex flex-col">
-        {/* Minimal top bar */}
-        <header className="border-b bg-background/80 backdrop-blur px-4 sm:px-6 h-12 flex items-center">
-          <span className="font-semibold text-sm tracking-tight">CPES</span>
-          <span className="text-muted-foreground text-xs ml-2">ระบบประเมินโปรเจค</span>
-        </header>
-
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-slate-100">
         <main className="flex-1 flex items-center justify-center px-4 py-12">
-          <div className="w-full max-w-sm space-y-6">
-            <div className="text-center space-y-1">
+          <div className="w-full max-w-sm space-y-8">
+
+            {/* Branding */}
+            <div className="text-center space-y-2">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-foreground text-background text-xl font-bold tracking-tighter shadow-lg mb-1">
+                CP
+              </div>
               <h1 className="text-2xl font-bold tracking-tight">เข้าสู่ระบบ</h1>
               <p className="text-sm text-muted-foreground">กรอกข้อมูลเพื่อเริ่มประเมินโปรเจค</p>
             </div>
 
-            <Card className="shadow-sm">
-              <CardContent className="pt-6">
+            {/* Form card */}
+            <Card className="shadow-xl border-0 ring-1 ring-black/5">
+              <CardContent className="pt-6 pb-6">
                 <form onSubmit={handleRegister} className="space-y-4">
                   <div className="space-y-1.5">
-                    <Label htmlFor="sid">รหัสนักศึกษา</Label>
+                    <Label htmlFor="sid" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">รหัสนักศึกษา</Label>
                     <Input id="sid" placeholder="เช่น 65012345"
+                      autoComplete="off" spellCheck={false} inputMode="numeric"
+                      className="h-10"
                       value={regForm.student_id}
                       onChange={(e) => setRegForm({ ...regForm, student_id: e.target.value })} />
                   </div>
                   <div className="space-y-1.5">
-                    <Label htmlFor="name">ชื่อ-นามสกุล</Label>
+                    <Label htmlFor="name" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">ชื่อ-นามสกุล</Label>
                     <Input id="name" placeholder="ชื่อ นามสกุล"
+                      autoComplete="name"
+                      className="h-10"
                       value={regForm.name}
                       onChange={(e) => setRegForm({ ...regForm, name: e.target.value })} />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1.5">
-                      <Label htmlFor="year">ชั้นปี</Label>
+                      <Label htmlFor="year" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">ชั้นปี</Label>
                       <Input id="year" type="number" placeholder="1–4" min={1} max={6}
+                        inputMode="numeric"
+                        className="h-10"
                         value={regForm.year}
                         onChange={(e) => setRegForm({ ...regForm, year: e.target.value })} />
                     </div>
                     <div className="space-y-1.5">
-                      <Label htmlFor="grp">รหัสกลุ่ม</Label>
+                      <Label htmlFor="grp" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">รหัสกลุ่ม</Label>
                       <Input id="grp" placeholder="เช่น group1"
+                        className="h-10"
                         value={regForm.own_group}
                         onChange={(e) => setRegForm({ ...regForm, own_group: e.target.value })} />
                     </div>
@@ -165,10 +172,14 @@ export default function StudentPage() {
                       {error}
                     </p>
                   )}
-                  <Button type="submit" className="w-full mt-2">เข้าสู่ระบบ</Button>
+                  <Button type="submit" size="lg" className="w-full mt-1 h-11 text-base font-semibold">
+                    เข้าสู่ระบบ
+                  </Button>
                 </form>
               </CardContent>
             </Card>
+
+            <p className="text-center text-xs text-muted-foreground">CPES — Classroom Project Evaluation System</p>
           </div>
         </main>
       </div>
@@ -257,6 +268,7 @@ export default function StudentPage() {
                   <Button
                     size="sm"
                     variant="ghost"
+                    aria-label="ปิดแบบประเมิน"
                     className="h-8 text-muted-foreground shrink-0"
                     onClick={() => { setSelectedProject(null); setError(""); }}
                   >
@@ -279,8 +291,10 @@ export default function StudentPage() {
                           <button
                             key={score}
                             type="button"
+                            aria-label={`คะแนน ${score}`}
+                            aria-pressed={answers[q.id] === score}
                             onClick={() => setAnswers({ ...answers, [q.id]: score })}
-                            className={`w-10 h-10 rounded-lg border-2 text-sm font-semibold transition-all ${
+                            className={`w-10 h-10 rounded-lg border-2 text-sm font-semibold transition-colors transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 ${
                               answers[q.id] === score
                                 ? "bg-primary text-primary-foreground border-primary shadow-sm scale-110"
                                 : "bg-background hover:bg-muted border-border hover:border-primary/40"
@@ -332,7 +346,7 @@ export default function StudentPage() {
                     key={project.id}
                     disabled={!canEvaluate}
                     onClick={() => canEvaluate && handleSelectProject(project)}
-                    className={`w-full text-left rounded-xl border px-4 py-3 transition-all flex items-center justify-between gap-3 ${
+                    className={`w-full text-left rounded-xl border px-4 py-3 transition-colors flex items-center justify-between gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 ${
                       isSelected
                         ? "border-primary bg-primary/5 ring-1 ring-primary shadow-sm"
                         : canEvaluate
