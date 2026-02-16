@@ -330,7 +330,7 @@ export default function AdminDashboard() {
                                 <div className="inline-flex items-baseline gap-1">
                                   <span className="text-xl font-bold text-slate-800">{s.evaluated_count}</span>
                                   <span className="text-slate-300 text-sm font-medium mx-0.5">/</span>
-                                  <span className="text-slate-400 text-base font-medium">{s.total_to_evaluate}</span>
+                                  <span className="text-slate-400 text-base font-medium">5</span>
                                 </div>
                               </td>
                               <td className="px-6 py-5">
