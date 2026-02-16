@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import type { EvaluationForm, ProjectStat, StudentMonitor } from "@/types";
 import { Button } from "@/components/ui/button";
 import {
@@ -134,7 +134,7 @@ export default function AdminDashboard() {
                   </TableHeader>
                   <TableBody>
                     {stats.ranking.map((row) => (
-                      <>
+                      <Fragment key={row.project_id}>
                         <TableRow
                           key={row.project_id}
                           className="cursor-pointer hover:bg-muted/50"
@@ -214,7 +214,7 @@ export default function AdminDashboard() {
                               </TableCell>
                             </TableRow>
                           )}
-                      </>
+                      </Fragment>
                     ))}
                   </TableBody>
                 </Table>
