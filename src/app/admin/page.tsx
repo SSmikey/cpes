@@ -16,7 +16,8 @@ import {
   ArrowRightIcon,
   ActivityIcon,
   CheckCircle2Icon,
-  ClockIcon
+  ClockIcon,
+  FileTextIcon
 } from "lucide-react";
 import { AdminNav } from "@/components/admin-nav";
 import { Button } from "@/components/ui/button";
@@ -92,23 +93,32 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 bg-white/40 p-1.5 rounded-2xl backdrop-blur-xl border border-white/60 shadow-md ring-1 ring-white/60">
-            <div className="px-4 py-1.5 flex items-center gap-3">
-              <span className="text-xs font-bold text-indigo-900/50 uppercase tracking-wider">แบบประเมิน</span>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 px-2">
+              <div className="p-2 bg-indigo-100 rounded-lg">
+                <FileTextIcon className="size-4 text-indigo-600" />
+              </div>
+              <span className="text-sm font-bold text-indigo-900 uppercase tracking-wide">แบบประเมิน</span>
+            </div>
+            <div className="relative">
               <Select value={selectedFormId} onValueChange={setSelectedFormId}>
-                <SelectTrigger className="w-64 h-10 border-none bg-white/50 shadow-sm focus:ring-0 text-indigo-900 font-semibold rounded-xl hover:bg-white/80 transition-colors">
+                <SelectTrigger className="w-80 h-12 bg-white border-white ring-1 ring-indigo-50 shadow-sm shadow-indigo-100/50 text-slate-700 font-bold rounded-xl hover:bg-slate-50 hover:border-indigo-200 transition-all text-base px-4">
                   <SelectValue placeholder="เลือก Form" />
                 </SelectTrigger>
-                <SelectContent className="border-indigo-100 shadow-xl rounded-xl">
+                <SelectContent className="border-indigo-100 shadow-xl rounded-xl p-1 bg-white/95 backdrop-blur-lg">
                   {forms.map((f) => (
-                    <SelectItem key={f.form_id} value={f.form_id} className="focus:bg-indigo-50 focus:text-indigo-900 cursor-pointer">
-                      {f.title} {f.active && "(Active)"}
+                    <SelectItem key={f.form_id} value={f.form_id} className="rounded-lg focus:bg-indigo-50 focus:text-indigo-700 cursor-pointer py-3 my-0.5 font-medium text-slate-600">
+                      {f.title} <span className="text-xs ml-2 px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-700 font-bold hidden data-[active=true]:inline-block" data-active={f.active}>ACTIVE</span>
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
+              {loading && (
+                <div className="absolute right-12 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <ActivityIcon className="size-4 animate-spin text-indigo-500" />
+                </div>
+              )}
             </div>
-            {loading && <div className="pr-4"><ActivityIcon className="size-5 animate-spin text-indigo-500" /></div>}
           </div>
         </div>
 
