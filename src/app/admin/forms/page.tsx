@@ -329,7 +329,7 @@ export default function FormManagement() {
                       <div className="flex items-center gap-3">
                         <Input
                           type="datetime-local"
-                          className="w-auto h-10 bg-white border-slate-200 focus:border-indigo-400 focus:ring-indigo-100 rounded-lg text-sm"
+                          className="w-auto h-10 bg-white border-slate-200 focus:border-indigo-400 focus:ring-indigo-100 rounded-none text-sm accent-indigo-600"
                           defaultValue={
                             form.deadline
                               ? new Date(form.deadline).toISOString().slice(0, 16)
@@ -567,7 +567,7 @@ export default function FormManagement() {
                     type="datetime-local"
                     value={newFormData.deadline}
                     onChange={(e) => setNewFormData({ ...newFormData, deadline: e.target.value })}
-                    className="h-11 bg-slate-50 border-slate-200 focus:border-indigo-500 rounded-xl font-medium"
+                    className="h-11 bg-slate-50 border-slate-200 focus:border-indigo-500 rounded-none font-medium accent-indigo-600"
                   />
                 </div>
               </div>

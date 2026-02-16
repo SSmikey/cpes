@@ -268,3 +268,26 @@ a {
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+
+  /* Custom Datetime Input Styling */
+  input[type="datetime-local"] {
+    accent-color: #4f46e5;
+    color-scheme: light;
+  }
+
+  input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    padding: 4px;
+    margin-right: -4px;
+    filter: invert(30%) sepia(80%) saturate(2000%) hue-rotate(220deg);
+    /* Adjust towards indigo */
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+
+  input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+  }
+}
