@@ -192,12 +192,15 @@ export default function AdminDashboard() {
                               </td>
                               <td className="bg-white rounded-r-lg py-5 px-4 text-center border-y border-r border-indigo-50/50 shadow-sm group-hover:shadow-indigo-100/50 transition-all">
                                 <div className={`
-                                rounded-lg p-2 transition-all duration-300
+                                rounded-lg p-2 transition-colors duration-200
                                 ${expandedProject === row.project_id
-                                    ? 'bg-indigo-100 text-indigo-600 rotate-180'
+                                    ? 'bg-indigo-100 text-indigo-600'
                                     : 'bg-slate-50 text-slate-300 group-hover:bg-indigo-50 group-hover:text-indigo-400'}
                               `}>
-                                  <ChevronDownIcon size={20} className="stroke-[3]" />
+                                  <ChevronDownIcon
+                                    size={20}
+                                    className={`stroke-[3] transition-transform duration-300 ${expandedProject === row.project_id ? 'rotate-180' : ''}`}
+                                  />
                                 </div>
                               </td>
                             </tr>
