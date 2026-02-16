@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import type { EvaluationForm, ProjectStat, StudentMonitor } from "@/types";
 import { Button } from "@/components/ui/button";
 import {
@@ -39,8 +39,10 @@ export default function AdminDashboard() {
   const [forms, setForms] = useState<EvaluationForm[]>([]);
   const [selectedFormId, setSelectedFormId] = useState<string>("");
   const [stats, setStats] = useState<StatsData | null>(null);
-  const [loading, setLoading] = useState(false);
   const [expandedProject, setExpandedProject] = useState<string | null>(null);
+
+  // derived: กำลังโหลดเมื่อเลือก form แล้วแต่ stats ยังไม่ตรง
+  const loading = selectedFormId !== "" && stats?.form_id !== selectedFormId;
 
   useEffect(() => {
     fetch("/api/forms")
@@ -52,18 +54,14 @@ export default function AdminDashboard() {
       });
   }, []);
 
-  const loadStats = useCallback(async (formId: string) => {
-    if (!formId) return;
-    setLoading(true);
-    const res = await fetch(`/api/stats?form_id=${formId}`);
-    const data = await res.json();
-    setStats(data);
-    setLoading(false);
-  }, []);
-
   useEffect(() => {
-    if (selectedFormId) loadStats(selectedFormId);
-  }, [selectedFormId, loadStats]);
+    if (!selectedFormId) return;
+    fetch(`/api/stats?form_id=${selectedFormId}`)
+      .then((r) => r.json())
+      .then((data: StatsData) => {
+        setStats(data);
+      });
+  }, [selectedFormId]);
 
   const handleExportCSV = () => {
     if (!selectedFormId) return;

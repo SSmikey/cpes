@@ -64,7 +64,12 @@ export default function FormManagement() {
   };
 
   useEffect(() => {
-    loadForms();
+    fetch("/api/forms")
+      .then((r) => r.json())
+      .then(({ forms }: { forms: EvaluationForm[] }) => {
+        setForms(forms);
+        setLoading(false);
+      });
   }, []);
 
   const handleActivate = async (formId: string) => {
