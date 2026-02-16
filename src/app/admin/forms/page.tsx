@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import type { EvaluationForm, Question } from "@/types";
+import { AdminNav } from "@/components/admin-nav";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -159,27 +160,27 @@ export default function FormManagement() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-muted/40 flex items-center justify-center">
-        <p className="text-muted-foreground">กำลังโหลด...</p>
-      </main>
+      <div className="min-h-screen bg-muted/40 flex flex-col">
+        <AdminNav />
+        <main className="flex-1 flex items-center justify-center">
+          <p className="text-muted-foreground text-sm">กำลังโหลด...</p>
+        </main>
+      </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-muted/40 p-4">
-      <div className="max-w-5xl mx-auto space-y-5">
+    <div className="min-h-screen bg-muted/40 flex flex-col">
+      <AdminNav />
+      <main className="flex-1">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-5">
         {/* Header */}
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div>
-            <h1 className="text-2xl font-bold">จัดการแบบประเมิน</h1>
-            <p className="text-sm text-muted-foreground">สร้าง แก้ไข และจัดการแบบประเมินทั้งหมด</p>
+            <h1 className="text-xl font-semibold">จัดการแบบประเมิน</h1>
+            <p className="text-sm text-muted-foreground">สร้าง แก้ไข และ activate แบบประเมิน</p>
           </div>
-          <div className="flex gap-2">
-            <a href="/admin">
-              <Button variant="outline">← Dashboard</Button>
-            </a>
-            <Button onClick={() => setShowNewForm(true)}>+ สร้างแบบประเมินใหม่</Button>
-          </div>
+          <Button onClick={() => setShowNewForm(true)} size="sm">+ สร้างแบบประเมินใหม่</Button>
         </div>
 
         {/* Form list */}
@@ -455,6 +456,7 @@ export default function FormManagement() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </main>
+      </main>
+    </div>
   );
 }

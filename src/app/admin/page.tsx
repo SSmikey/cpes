@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Fragment } from "react";
 import type { EvaluationForm, ProjectStat, StudentMonitor } from "@/types";
+import { AdminNav } from "@/components/admin-nav";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -69,33 +70,28 @@ export default function AdminDashboard() {
   };
 
   return (
-    <main className="min-h-screen bg-muted/40 p-4">
-      <div className="max-w-6xl mx-auto space-y-6">
-        {/* Top nav */}
+    <div className="min-h-screen bg-muted/40 flex flex-col">
+      <AdminNav />
+      <main className="flex-1">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+        {/* Page header */}
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div>
-            <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-            <p className="text-sm text-muted-foreground">ระบบประเมินโปรเจคในชั้นเรียน</p>
+            <h1 className="text-xl font-semibold">Dashboard</h1>
+            <p className="text-sm text-muted-foreground">สถิติและติดตามการประเมินโปรเจค</p>
           </div>
-          <div className="flex gap-2">
-            <a href="/admin/forms">
-              <Button variant="outline">จัดการแบบฟอร์ม</Button>
-            </a>
-            <Button onClick={handleExportCSV} disabled={!selectedFormId}>
-              Export CSV
-            </Button>
-          </div>
+          <Button onClick={handleExportCSV} disabled={!selectedFormId} variant="outline" size="sm">
+            Export CSV
+          </Button>
         </div>
 
-        {/* Form selector */}
-        <Card>
-          <CardContent className="pt-5 pb-5">
-            <div className="flex items-center gap-3 flex-wrap">
-              <label className="text-sm font-medium">เลือกแบบประเมิน:</label>
-              <Select value={selectedFormId} onValueChange={setSelectedFormId}>
-                <SelectTrigger className="w-64">
-                  <SelectValue placeholder="เลือก form" />
-                </SelectTrigger>
+        {/* Form selector — inline, minimal */}
+        <div className="flex items-center gap-3 flex-wrap rounded-xl border bg-card px-4 py-3">
+          <span className="text-sm text-muted-foreground shrink-0">แบบประเมิน:</span>
+          <Select value={selectedFormId} onValueChange={setSelectedFormId}>
+            <SelectTrigger className="w-72 h-8 text-sm">
+              <SelectValue placeholder="เลือก form" />
+            </SelectTrigger>
                 <SelectContent>
                   {forms.map((f) => (
                     <SelectItem key={f.form_id} value={f.form_id}>
@@ -108,9 +104,7 @@ export default function AdminDashboard() {
                 </SelectContent>
               </Select>
               {loading && <span className="text-sm text-muted-foreground">กำลังโหลด...</span>}
-            </div>
-          </CardContent>
-        </Card>
+        </div>
 
         {stats && (
           <>
@@ -281,6 +275,7 @@ export default function AdminDashboard() {
           </>
         )}
       </div>
-    </main>
+      </main>
+    </div>
   );
 }
