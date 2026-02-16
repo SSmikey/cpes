@@ -3,7 +3,10 @@
     "form_id": "form_2026",
     "title": "แบบประเมินโปรเจคปี 2569",
     "active": true,
-    "scale": { "min": 1, "max": 5 },
+    "scale": {
+      "min": 1,
+      "max": 5
+    },
     "deadline": null,
     "questions": [
       {
