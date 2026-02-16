@@ -156,7 +156,7 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="p-8 bg-slate-50/50">
-                  <div className="overflow-x-auto">
+                  <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                     <table className="w-full border-separate border-spacing-y-3">
                       <thead>
                         <tr className="text-[11px] font-bold text-indigo-300 uppercase tracking-widest">
