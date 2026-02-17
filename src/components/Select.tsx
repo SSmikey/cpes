@@ -31,7 +31,7 @@ export const Select = ({ value, onChange, children, className = "", placeholder 
     // Find selected label
     const items = React.Children.toArray(children).filter(
         (child) => React.isValidElement(child) && child.type === SelectItem
-    ) as React.ReactElement[];
+    ) as React.ReactElement<any>[];
 
     const selectedItem = items.find((item) => item.props.value === value);
     const displayText = selectedItem ? selectedItem.props.children : placeholder;
@@ -67,11 +67,12 @@ export const Select = ({ value, onChange, children, className = "", placeholder 
                         <div className="custom-scrollbar overflow-y-auto max-h-60 p-1">
                             {React.Children.map(children, (child) => {
                                 if (React.isValidElement(child) && child.type === SelectItem) {
-                                    return React.cloneElement(child as React.ReactElement<any>, {
-                                        isSelected: child.props.value === value,
+                                    const selectItemChild = child as React.ReactElement<any>;
+                                    return React.cloneElement(selectItemChild, {
+                                        isSelected: selectItemChild.props.value === value,
                                         onClick: () => {
                                             if (onChange) {
-                                                onChange({ target: { value: child.props.value } });
+                                                onChange({ target: { value: selectItemChild.props.value } });
                                             }
                                             setIsOpen(false);
                                         },
