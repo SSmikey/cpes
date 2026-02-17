@@ -15,6 +15,7 @@ import {
 import { Badge } from "@/components/Badge";
 import { Progress } from "@/components/Progress";
 
+/* ─────────────────────────── types ─────────────────────────── */
 type Step = "register" | "evaluate";
 
 interface EvalState {
@@ -23,7 +24,13 @@ interface EvalState {
   projects: Project[];
 }
 
+/* ──────────────────── inline style helpers ──────────────────── */
+const GRAD = "linear-gradient(135deg, #7c3aed 0%, #6d28d9 30%, #2563eb 70%, #06b6d4 100%)";
+const POLY_SVG = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Cpolygon points='0,0 400,0 400,300' fill='rgba(255,255,255,0.04)'/%3E%3Cpolygon points='0,0 250,0 400,180 400,0' fill='rgba(255,255,255,0.05)'/%3E%3Cpolygon points='100,0 400,0 400,120' fill='rgba(255,255,255,0.03)'/%3E%3Cpolygon points='0,100 200,0 400,80 400,300 0,300' fill='rgba(0,0,0,0.08)'/%3E%3C/svg%3E")`;
+
+/* ════════════════════════ COMPONENT ════════════════════════════ */
 export default function StudentPage() {
+  /* ── state (unchanged) ── */
   const [step, setStep] = useState<Step>("register");
   const [evalState, setEvalState] = useState<EvalState | null>(null);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
@@ -39,6 +46,7 @@ export default function StudentPage() {
     own_group: "",
   });
 
+  /* ── logic (unchanged) ── */
   const loadEvalState = useCallback(async (student: Student) => {
     const [formRes, projectsRes] = await Promise.all([
       fetch("/api/active-form"),
@@ -114,79 +122,179 @@ export default function StudentPage() {
     setSuccessMsg(`ประเมิน "${selectedProject.name}" เรียบร้อยแล้ว ✓`);
   };
 
-  // --- REGISTER STEP ---
+  /* ══════════════════════ REGISTER STEP ══════════════════════ */
   if (step === "register") {
     return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-slate-100">
-        <main className="flex-1 flex items-center justify-center px-4 py-12">
-          <div className="w-full max-w-sm space-y-8">
-
-            {/* Branding */}
-            <div className="text-center space-y-2">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-foreground text-background text-xl font-bold tracking-tighter shadow-lg mb-1">
-                CP
-              </div>
-              <h1 className="text-2xl font-bold tracking-tight">เข้าสู่ระบบ</h1>
-              <p className="text-sm text-muted-foreground">กรอกข้อมูลเพื่อเริ่มประเมินโปรเจค</p>
+      <div
+        style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f1f5f9" }}
+      >
+        {/* Card container — split layout */}
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 820,
+            margin: "24px",
+            borderRadius: 20,
+            overflow: "hidden",
+            boxShadow: "0 25px 60px rgba(109,40,217,0.18), 0 8px 24px rgba(0,0,0,0.10)",
+            display: "flex",
+            minHeight: 420,
+            background: "#fff",
+          }}
+        >
+          {/* ── LEFT: form side ── */}
+          <div style={{ flex: "1 1 55%", padding: "48px 44px", display: "flex", flexDirection: "column", justifyContent: "center", gap: 28 }}>
+            {/* Title */}
+            <div style={{ marginBottom: 4 }}>
+              <h1 style={{ fontSize: 28, fontWeight: 700, color: "#0f172a", margin: 0, letterSpacing: "-0.5px" }}>
+                เข้าสู่ระบบ
+              </h1>
+              <p style={{ fontSize: 13, color: "#94a3b8", marginTop: 6 }}>
+                กรอกข้อมูลเพื่อเริ่มประเมินโปรเจค
+              </p>
             </div>
 
-            {/* Form card */}
-            <Card className="shadow-xl border-0 ring-1 ring-black/5">
-              <CardContent className="pt-6 pb-6">
-                <form onSubmit={handleRegister} className="space-y-4">
-                  <div className="space-y-1.5">
-                    <Label htmlFor="sid" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">รหัสนักศึกษา</Label>
-                    <Input id="sid" placeholder="เช่น 65012345"
-                      autoComplete="off" spellCheck={false} inputMode="numeric"
-                      className="h-10"
-                      value={regForm.student_id}
-                      onChange={(e) => setRegForm({ ...regForm, student_id: e.target.value })} />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="name" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">ชื่อ-นามสกุล</Label>
-                    <Input id="name" placeholder="ชื่อ นามสกุล"
-                      autoComplete="name"
-                      className="h-10"
-                      value={regForm.name}
-                      onChange={(e) => setRegForm({ ...regForm, name: e.target.value })} />
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1.5">
-                      <Label htmlFor="year" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">ชั้นปี</Label>
-                      <Input id="year" type="number" placeholder="1–4" min={1} max={6}
-                        inputMode="numeric"
-                        className="h-10"
-                        value={regForm.year}
-                        onChange={(e) => setRegForm({ ...regForm, year: e.target.value })} />
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label htmlFor="grp" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">รหัสกลุ่ม</Label>
-                      <Input id="grp" placeholder="เช่น group1"
-                        className="h-10"
-                        value={regForm.own_group}
-                        onChange={(e) => setRegForm({ ...regForm, own_group: e.target.value })} />
-                    </div>
-                  </div>
-                  {error && (
-                    <p className="text-sm text-destructive bg-destructive/10 px-3 py-2 rounded-md">
-                      {error}
-                    </p>
-                  )}
-                  <Button type="submit" size="lg" className="w-full mt-1 h-11 text-base font-semibold">
-                    เข้าสู่ระบบ
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
+            {/* Form */}
+            <form onSubmit={handleRegister} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              {/* Student ID */}
+              <div>
+                <label style={labelStyle}>รหัสนักศึกษา</label>
+                <input
+                  placeholder="เช่น 65012345"
+                  autoComplete="off"
+                  inputMode="numeric"
+                  value={regForm.student_id}
+                  onChange={(e) => setRegForm({ ...regForm, student_id: e.target.value })}
+                  style={inputStyle}
+                  onFocus={e => Object.assign(e.target.style, inputFocusStyle)}
+                  onBlur={e => Object.assign(e.target.style, inputStyle)}
+                />
+              </div>
 
-            <p className="text-center text-xs text-muted-foreground">CPES — Classroom Project Evaluation System</p>
+              {/* Name */}
+              <div>
+                <label style={labelStyle}>ชื่อ-นามสกุล</label>
+                <input
+                  placeholder="ชื่อ นามสกุล"
+                  autoComplete="name"
+                  value={regForm.name}
+                  onChange={(e) => setRegForm({ ...regForm, name: e.target.value })}
+                  style={inputStyle}
+                  onFocus={e => Object.assign(e.target.style, inputFocusStyle)}
+                  onBlur={e => Object.assign(e.target.style, inputStyle)}
+                />
+              </div>
+
+              {/* Year + Group */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                <div>
+                  <label style={labelStyle}>ชั้นปี</label>
+                  <input
+                    type="number"
+                    placeholder="1–4"
+                    min={1}
+                    max={6}
+                    inputMode="numeric"
+                    value={regForm.year}
+                    onChange={(e) => setRegForm({ ...regForm, year: e.target.value })}
+                    style={inputStyle}
+                    onFocus={e => Object.assign(e.target.style, inputFocusStyle)}
+                    onBlur={e => Object.assign(e.target.style, inputStyle)}
+                  />
+                </div>
+                <div>
+                  <label style={labelStyle}>รหัสกลุ่ม</label>
+                  <input
+                    placeholder="เช่น group1"
+                    value={regForm.own_group}
+                    onChange={(e) => setRegForm({ ...regForm, own_group: e.target.value })}
+                    style={inputStyle}
+                    onFocus={e => Object.assign(e.target.style, inputFocusStyle)}
+                    onBlur={e => Object.assign(e.target.style, inputStyle)}
+                  />
+                </div>
+              </div>
+
+              {/* Error */}
+              {error && (
+                <p style={{ fontSize: 13, color: "#dc2626", background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 8, padding: "8px 12px", margin: 0 }}>
+                  {error}
+                </p>
+              )}
+
+              {/* Submit */}
+              <button type="submit" style={submitBtnStyle}
+                onMouseEnter={e => Object.assign(e.currentTarget.style, { ...submitBtnStyle, opacity: "0.92", transform: "translateY(-1px)" })}
+                onMouseLeave={e => Object.assign(e.currentTarget.style, { ...submitBtnStyle, opacity: "1", transform: "translateY(0)" })}
+              >
+                เข้าสู่ระบบ
+              </button>
+            </form>
+
+            <p style={{ fontSize: 11, color: "#cbd5e1", textAlign: "center", marginTop: 4 }}>
+              CPES — Classroom Project Evaluation System
+            </p>
           </div>
-        </main>
+
+          {/* ── RIGHT: gradient + welcome side ── */}
+          <div
+            style={{
+              flex: "1 1 45%",
+              background: GRAD,
+              backgroundImage: `${POLY_SVG}, ${GRAD}`,
+              backgroundSize: "cover",
+              backgroundBlendMode: "overlay",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-end",
+              justifyContent: "center",
+              padding: "48px 44px",
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            {/* Decorative polygon shapes */}
+            <div style={{
+              position: "absolute", top: -60, right: -60,
+              width: 220, height: 220,
+              background: "rgba(255,255,255,0.07)",
+              borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%",
+            }} />
+            <div style={{
+              position: "absolute", bottom: -40, left: -40,
+              width: 160, height: 160,
+              background: "rgba(255,255,255,0.05)",
+              borderRadius: "60% 40% 30% 70% / 50% 60% 40% 50%",
+            }} />
+
+            <div style={{ position: "relative", textAlign: "right" }}>
+              <h2 style={{
+                fontSize: 40,
+                fontWeight: 800,
+                color: "#fff",
+                lineHeight: 1.15,
+                margin: 0,
+                letterSpacing: "-1px",
+                textShadow: "0 2px 20px rgba(0,0,0,0.2)",
+              }}>
+                Welcome<br />Back.
+              </h2>
+              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.72)", marginTop: 16, lineHeight: 1.7, maxWidth: 200 }}>
+                ระบบประเมินโปรเจคสำหรับนักศึกษา<br />เข้าสู่ระบบเพื่อเริ่มประเมิน
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <style>{`
+          input::placeholder { color: #cbd5e1; }
+          input[type=number]::-webkit-inner-spin-button { opacity: 0.4; }
+        `}</style>
       </div>
     );
   }
 
-  // --- EVALUATE STEP ---
+  /* ══════════════════════ EVALUATE STEP ══════════════════════ */
   if (!evalState) return null;
   const { student, form, projects } = evalState;
   const totalToEvaluate = projects.length - 1;
@@ -197,143 +305,214 @@ export default function StudentPage() {
   const allDone = evaluatedCount >= totalToEvaluate;
 
   return (
-    <div className="min-h-screen bg-muted/40 flex flex-col">
-      {/* Top bar with student info */}
-      <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3 min-w-0">
-            <span className="font-semibold text-sm tracking-tight shrink-0">CPES</span>
-            <span className="text-muted-foreground text-xs hidden sm:block truncate">
+    <div style={{ minHeight: "100vh", background: "#f8fafc", display: "flex", flexDirection: "column" }}>
+
+      {/* ── Top bar ── */}
+      <header style={{
+        position: "sticky", top: 0, zIndex: 40,
+        background: "rgba(255,255,255,0.95)",
+        backdropFilter: "blur(12px)",
+        borderBottom: "1px solid #e2e8f0",
+        boxShadow: "0 1px 12px rgba(109,40,217,0.07)",
+      }}>
+        <div style={{ maxWidth: 768, margin: "0 auto", padding: "0 20px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
+          {/* Logo + name */}
+          <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
+            <span style={{
+              display: "inline-flex", alignItems: "center", justifyContent: "center",
+              width: 32, height: 32, borderRadius: 8,
+              background: GRAD,
+              color: "#fff", fontSize: 12, fontWeight: 800, letterSpacing: "-0.5px",
+              flexShrink: 0,
+            }}>CP</span>
+            <span style={{ fontWeight: 700, fontSize: 14, color: "#1e293b", flexShrink: 0 }}>CPES</span>
+            <span style={{ color: "#94a3b8", fontSize: 12, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
               {student.name} · กลุ่ม {student.own_group}
             </span>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
-            {isDeadlinePassed && <Badge variant="destructive" className="text-xs">ปิดรับแล้ว</Badge>}
-            <span className="text-xs text-muted-foreground font-mono">
+
+          {/* Progress + badge */}
+          <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+            {isDeadlinePassed && (
+              <span style={badgeDestructiveStyle}>ปิดรับแล้ว</span>
+            )}
+            <span style={{ fontSize: 12, color: "#64748b", fontFamily: "monospace" }}>
               {evaluatedCount}/{totalToEvaluate}
             </span>
-            <div className="w-20 hidden sm:block">
-              <Progress value={progressPct} className="h-1.5" />
+            <div style={{ width: 72, height: 6, borderRadius: 99, background: "#e2e8f0", overflow: "hidden" }}>
+              <div style={{ height: "100%", width: `${progressPct}%`, background: GRAD, borderRadius: 99, transition: "width 0.4s ease" }} />
             </div>
           </div>
         </div>
       </header>
 
-      <main className="flex-1">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+      <main style={{ flex: 1 }}>
+        <div style={{ maxWidth: 768, margin: "0 auto", padding: "32px 20px", display: "flex", flexDirection: "column", gap: 24 }}>
 
-          {/* Form info + progress */}
-          <div className="space-y-3">
-            <div>
-              <h1 className="text-xl font-semibold">{form.title}</h1>
-              <p className="text-sm text-muted-foreground mt-0.5">
+          {/* ── Form title + progress ── */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            {/* Decorative header */}
+            <div style={{
+              borderRadius: 16,
+              padding: "20px 24px",
+              background: GRAD,
+              backgroundImage: `${POLY_SVG}, ${GRAD}`,
+              color: "#fff",
+              position: "relative",
+              overflow: "hidden",
+            }}>
+              <h1 style={{ fontSize: 18, fontWeight: 700, margin: 0, letterSpacing: "-0.3px" }}>{form.title}</h1>
+              <p style={{ fontSize: 12, opacity: 0.8, marginTop: 4 }}>
                 {student.name} ({student.student_id})
                 {form.deadline && (
                   <> · กำหนดส่ง {new Date(form.deadline).toLocaleDateString("th-TH")}</>
                 )}
               </p>
             </div>
-            <div className="space-y-1.5">
-              <div className="flex justify-between text-xs text-muted-foreground">
+
+            {/* Progress bar */}
+            <div style={{ background: "#fff", borderRadius: 12, padding: "14px 18px", border: "1px solid #e2e8f0", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "#64748b", marginBottom: 8 }}>
                 <span>ความคืบหน้า</span>
-                <span>{evaluatedCount} / {totalToEvaluate} กลุ่ม</span>
+                <span style={{ fontWeight: 600, color: "#7c3aed" }}>{evaluatedCount} / {totalToEvaluate} กลุ่ม</span>
               </div>
-              <Progress value={progressPct} className="h-2" />
+              <div style={{ height: 8, borderRadius: 99, background: "#ede9fe", overflow: "hidden" }}>
+                <div style={{ height: "100%", width: `${progressPct}%`, background: GRAD, borderRadius: 99, transition: "width 0.4s ease" }} />
+              </div>
             </div>
+
             {allDone && (
-              <div className="rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-800 font-medium">
+              <div style={{ borderRadius: 12, background: "#f0fdf4", border: "1px solid #bbf7d0", padding: "12px 16px", fontSize: 14, color: "#15803d", fontWeight: 500 }}>
                 ประเมินครบทุกกลุ่มแล้ว ✓
               </div>
             )}
           </div>
 
-          {/* Success message */}
+          {/* ── Success message ── */}
           {successMsg && !allDone && (
-            <div className="rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-800">
+            <div style={{ borderRadius: 12, background: "#f0fdf4", border: "1px solid #bbf7d0", padding: "12px 16px", fontSize: 14, color: "#15803d" }}>
               {successMsg}
             </div>
           )}
 
-          {/* Evaluation form */}
+          {/* ── Evaluation form ── */}
           {selectedProject && !isDeadlinePassed && (
-            <Card className="border-primary shadow-md">
-              <CardHeader className="pb-4 border-b">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <CardTitle className="text-base">ประเมิน: {selectedProject.name}</CardTitle>
-                    <CardDescription className="mt-0.5">
-                      คะแนน {form.scale.min} (น้อยที่สุด) — {form.scale.max} (มากที่สุด)
-                    </CardDescription>
+            <div style={{
+              borderRadius: 16,
+              border: "2px solid #7c3aed",
+              background: "#fff",
+              boxShadow: "0 4px 24px rgba(109,40,217,0.12)",
+              overflow: "hidden",
+            }}>
+              {/* Header with gradient accent */}
+              <div style={{
+                padding: "18px 22px",
+                borderBottom: "1px solid #ede9fe",
+                display: "flex",
+                alignItems: "flex-start",
+                justifyContent: "space-between",
+                gap: 12,
+                background: "linear-gradient(to right, #faf5ff, #fff)",
+              }}>
+                <div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: "#1e293b" }}>ประเมิน: {selectedProject.name}</div>
+                  <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 3 }}>
+                    คะแนน {form.scale.min} (น้อยที่สุด) — {form.scale.max} (มากที่สุด)
                   </div>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    aria-label="ปิดแบบประเมิน"
-                    className="h-8 text-muted-foreground shrink-0"
-                    onClick={() => { setSelectedProject(null); setError(""); }}
-                  >
-                    ✕
-                  </Button>
                 </div>
-              </CardHeader>
-              <CardContent className="pt-5">
-                <form onSubmit={handleSubmitEval} className="space-y-6">
+                <button
+                  aria-label="ปิดแบบประเมิน"
+                  onClick={() => { setSelectedProject(null); setError(""); }}
+                  style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: 16, padding: 4, lineHeight: 1 }}
+                >✕</button>
+              </div>
+
+              <div style={{ padding: "22px" }}>
+                <form onSubmit={handleSubmitEval} style={{ display: "flex", flexDirection: "column", gap: 24 }}>
                   {activeQuestions.map((q) => (
-                    <div key={q.id} className="space-y-2.5">
-                      <p className="text-sm font-medium leading-relaxed">
+                    <div key={q.id}>
+                      <p style={{ fontSize: 14, fontWeight: 600, color: "#1e293b", margin: "0 0 10px 0", lineHeight: 1.6 }}>
                         {q.order}. {q.text}
                       </p>
-                      <div className="flex items-center gap-1.5 flex-wrap">
+                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                         {Array.from(
                           { length: form.scale.max - form.scale.min + 1 },
                           (_, i) => form.scale.min + i
-                        ).map((score) => (
-                          <button
-                            key={score}
-                            type="button"
-                            aria-label={`คะแนน ${score}`}
-                            aria-pressed={answers[q.id] === score}
-                            onClick={() => setAnswers({ ...answers, [q.id]: score })}
-                            className={`w-10 h-10 rounded-lg border-2 text-sm font-semibold transition-colors transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 ${answers[q.id] === score
-                                ? "bg-primary text-primary-foreground border-primary shadow-sm scale-110"
-                                : "bg-background hover:bg-muted border-border hover:border-primary/40"
-                              }`}
-                          >
-                            {score}
-                          </button>
-                        ))}
+                        ).map((score) => {
+                          const isActive = answers[q.id] === score;
+                          return (
+                            <button
+                              key={score}
+                              type="button"
+                              aria-label={`คะแนน ${score}`}
+                              aria-pressed={isActive}
+                              onClick={() => setAnswers({ ...answers, [q.id]: score })}
+                              style={{
+                                width: 40, height: 40,
+                                borderRadius: 10,
+                                border: isActive ? "2px solid #7c3aed" : "2px solid #e2e8f0",
+                                background: isActive ? GRAD : "#f8fafc",
+                                color: isActive ? "#fff" : "#64748b",
+                                fontSize: 13,
+                                fontWeight: 700,
+                                cursor: "pointer",
+                                transform: isActive ? "scale(1.12)" : "scale(1)",
+                                boxShadow: isActive ? "0 4px 12px rgba(109,40,217,0.3)" : "none",
+                                transition: "all 0.15s ease",
+                              }}
+                            >
+                              {score}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
                   ))}
+
                   {error && (
-                    <p className="text-sm text-destructive bg-destructive/10 px-3 py-2 rounded-md">
+                    <p style={{ fontSize: 13, color: "#dc2626", background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 8, padding: "8px 12px", margin: 0 }}>
                       {error}
                     </p>
                   )}
-                  <div className="flex gap-2 pt-1 border-t">
-                    <Button type="submit" disabled={submitting} className="mt-3">
+
+                  <div style={{ display: "flex", gap: 10, paddingTop: 12, borderTop: "1px solid #f1f5f9" }}>
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      style={{
+                        ...submitBtnStyle,
+                        opacity: submitting ? 0.7 : 1,
+                        cursor: submitting ? "not-allowed" : "pointer",
+                        padding: "10px 24px",
+                        fontSize: 14,
+                      }}
+                    >
                       {submitting ? "กำลังส่ง..." : "ส่งการประเมิน"}
-                    </Button>
-                    <Button
+                    </button>
+                    <button
                       type="button"
-                      variant="ghost"
-                      className="mt-3"
                       onClick={() => { setSelectedProject(null); setError(""); }}
+                      style={{
+                        background: "none", border: "1px solid #e2e8f0",
+                        borderRadius: 10, padding: "10px 18px",
+                        fontSize: 14, color: "#64748b", cursor: "pointer",
+                        fontWeight: 500,
+                      }}
                     >
                       ยกเลิก
-                    </Button>
+                    </button>
                   </div>
                 </form>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           )}
 
-          {/* Project grid */}
-          <div className="space-y-3">
-            <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
+          {/* ── Project grid ── */}
+          <div>
+            <h2 style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>
               รายการกลุ่มทั้งหมด
             </h2>
-            <div className="grid gap-2.5 sm:grid-cols-2">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 10 }}>
               {projects.map((project) => {
                 const isOwn = project.id === student.own_group;
                 const isDone = student.evaluated_projects.includes(project.id);
@@ -345,31 +524,59 @@ export default function StudentPage() {
                     key={project.id}
                     disabled={!canEvaluate}
                     onClick={() => canEvaluate && handleSelectProject(project)}
-                    className={`w-full text-left rounded-xl border px-4 py-3 transition-colors flex items-center justify-between gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 ${isSelected
-                        ? "border-primary bg-primary/5 ring-1 ring-primary shadow-sm"
+                    style={{
+                      width: "100%",
+                      textAlign: "left",
+                      borderRadius: 12,
+                      border: isSelected
+                        ? "2px solid #7c3aed"
                         : canEvaluate
-                          ? "bg-card hover:border-primary/50 hover:bg-muted/50 hover:shadow-sm cursor-pointer"
-                          : "bg-card opacity-50 cursor-default"
-                      }`}
+                          ? "1px solid #e2e8f0"
+                          : "1px solid #f1f5f9",
+                      background: isSelected
+                        ? "linear-gradient(135deg, #faf5ff, #ede9fe22)"
+                        : canEvaluate
+                          ? "#fff"
+                          : "#f8fafc",
+                      padding: "14px 16px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: 10,
+                      cursor: canEvaluate ? "pointer" : "default",
+                      opacity: (!canEvaluate && !isOwn && !isDone) ? 0.5 : 1,
+                      boxShadow: isSelected
+                        ? "0 4px 16px rgba(109,40,217,0.14)"
+                        : canEvaluate
+                          ? "0 1px 4px rgba(0,0,0,0.04)"
+                          : "none",
+                      transition: "all 0.15s ease",
+                    }}
                   >
-                    <span className={`font-medium text-sm ${isSelected ? "text-primary" : ""}`}>
+                    <span style={{
+                      fontSize: 14, fontWeight: 600,
+                      color: isSelected ? "#7c3aed" : "#1e293b",
+                    }}>
                       {project.name}
                     </span>
-                    <span className="shrink-0">
-                      {isOwn && <Badge variant="secondary" className="text-xs">กลุ่มของฉัน</Badge>}
+                    <span style={{ flexShrink: 0 }}>
+                      {isOwn && (
+                        <span style={badgeSecondaryStyle}>กลุ่มของฉัน</span>
+                      )}
                       {isDone && !isOwn && (
-                        <Badge className="bg-green-100 text-green-700 border-green-200 hover:bg-green-100 text-xs">
-                          ✓ ประเมินแล้ว
-                        </Badge>
+                        <span style={badgeSuccessStyle}>✓ ประเมินแล้ว</span>
                       )}
                       {canEvaluate && !isSelected && (
-                        <span className="text-xs text-muted-foreground">คลิกเพื่อประเมิน →</span>
+                        <span style={{ fontSize: 11, color: "#94a3b8" }}>คลิกเพื่อประเมิน →</span>
                       )}
                       {isSelected && (
-                        <Badge className="text-xs">กำลังประเมิน</Badge>
+                        <span style={{
+                          fontSize: 11, fontWeight: 600, color: "#7c3aed",
+                          background: "#ede9fe", borderRadius: 6, padding: "2px 8px",
+                        }}>กำลังประเมิน</span>
                       )}
                       {isDeadlinePassed && !isOwn && !isDone && (
-                        <Badge variant="destructive" className="text-xs">ปิดแล้ว</Badge>
+                        <span style={badgeDestructiveStyle}>ปิดแล้ว</span>
                       )}
                     </span>
                   </button>
@@ -383,3 +590,80 @@ export default function StudentPage() {
     </div>
   );
 }
+
+/* ══════════════════════ SHARED STYLES ════════════════════════ */
+const labelStyle: React.CSSProperties = {
+  display: "block",
+  fontSize: 11,
+  fontWeight: 700,
+  color: "#94a3b8",
+  textTransform: "uppercase",
+  letterSpacing: "0.06em",
+  marginBottom: 6,
+};
+
+const inputStyle: React.CSSProperties = {
+  width: "100%",
+  height: 42,
+  borderRadius: 10,
+  border: "1.5px solid #e2e8f0",
+  padding: "0 12px",
+  fontSize: 14,
+  color: "#1e293b",
+  background: "#f8fafc",
+  outline: "none",
+  boxSizing: "border-box",
+  transition: "border-color 0.15s ease, box-shadow 0.15s ease",
+};
+
+const inputFocusStyle: React.CSSProperties = {
+  ...inputStyle,
+  borderColor: "#7c3aed",
+  boxShadow: "0 0 0 3px rgba(124,58,237,0.12)",
+  background: "#fff",
+};
+
+const submitBtnStyle: React.CSSProperties = {
+  width: "100%",
+  height: 44,
+  borderRadius: 10,
+  border: "none",
+  background: "linear-gradient(135deg, #7c3aed 0%, #2563eb 100%)",
+  color: "#fff",
+  fontSize: 15,
+  fontWeight: 700,
+  cursor: "pointer",
+  letterSpacing: "0.01em",
+  boxShadow: "0 4px 16px rgba(109,40,217,0.28)",
+  transition: "opacity 0.15s ease, transform 0.15s ease",
+};
+
+const badgeSecondaryStyle: React.CSSProperties = {
+  fontSize: 11,
+  fontWeight: 600,
+  background: "#f1f5f9",
+  color: "#64748b",
+  borderRadius: 6,
+  padding: "2px 8px",
+  border: "1px solid #e2e8f0",
+};
+
+const badgeSuccessStyle: React.CSSProperties = {
+  fontSize: 11,
+  fontWeight: 600,
+  background: "#dcfce7",
+  color: "#15803d",
+  borderRadius: 6,
+  padding: "2px 8px",
+  border: "1px solid #bbf7d0",
+};
+
+const badgeDestructiveStyle: React.CSSProperties = {
+  fontSize: 11,
+  fontWeight: 600,
+  background: "#fef2f2",
+  color: "#dc2626",
+  borderRadius: 6,
+  padding: "2px 8px",
+  border: "1px solid #fecaca",
+};
