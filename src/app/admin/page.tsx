@@ -102,30 +102,40 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 bg-slate-50/80 p-2 rounded-[24px] border border-slate-200/60">
-              <div className="flex items-center gap-3 px-4 py-2 bg-white rounded-2xl shadow-sm border border-slate-200/50">
-                <FileTextIcon className="size-4 text-indigo-500" />
-                <Select
-                  value={selectedFormId}
-                  onChange={(e: any) => setSelectedFormId(e.target.value)}
-                  className="bg-transparent border-0 shadow-none h-8 w-full sm:w-56 font-bold text-slate-700 focus-visible:ring-0 focus:ring-0"
-                >
-                  {forms.map((f) => (
-                    <SelectItem key={f.form_id} value={f.form_id}>
-                      {f.title}
-                    </SelectItem>
-                  ))}
-                </Select>
+            <div className="flex flex-wrap items-center gap-4 bg-slate-50/50 p-2 rounded-[24px] border border-slate-100 shadow-inner">
+              <div className="flex items-center gap-3 px-4">
+                <div className="p-2.5 bg-indigo-100/50 rounded-xl text-indigo-600">
+                  <FileTextIcon className="size-5" />
+                </div>
+                <div className="w-72">
+                  <Select
+                    value={selectedFormId}
+                    onChange={(e: any) => setSelectedFormId(e.target.value)}
+                    placeholder="เลือกแบบประเมิน..."
+                  >
+                    {forms.map((f) => (
+                      <SelectItem key={f.form_id} value={f.form_id}>
+                        {f.title}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                </div>
               </div>
 
-              <Button
-                onClick={handleExportCSV}
-                disabled={!selectedFormId}
-                variant="outline"
-                className="h-12 px-6 rounded-2xl bg-white border-slate-200 hover:border-indigo-400 font-bold text-slate-700 hover:text-indigo-600 hover:bg-indigo-50/30 transition-all border-2"
-              >
-                <DownloadIcon className="mr-2.5 size-4" /> Export CSV
-              </Button>
+              <div className="h-10 w-px bg-slate-200/60 hidden md:block" />
+
+              <div className="flex items-center gap-3 px-2">
+                <Button
+                  onClick={handleExportCSV}
+                  disabled={!selectedFormId}
+                  variant="outline"
+                  size="lg"
+                  className="rounded-2xl border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 text-slate-600 font-bold px-6 h-11 transition-all shadow-sm active:scale-95"
+                >
+                  <DownloadIcon className="size-4 mr-2" />
+                  Export Data
+                </Button>
+              </div>
             </div>
           </div>
         </div>
