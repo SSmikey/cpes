@@ -2,18 +2,18 @@
 
 import { useState, useCallback } from "react";
 import type { Project, EvaluationForm, Student } from "@/types";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/components/Button";
+import { Input } from "@/components/Input";
+import { Label } from "@/components/Label";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+} from "@/components/Card";
+import { Badge } from "@/components/Badge";
+import { Progress } from "@/components/Progress";
 
 /* ─────────────────────────── types ─────────────────────────── */
 type Step = "register" | "evaluate";
