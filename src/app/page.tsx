@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import type { Project, EvaluationForm, Student } from "@/types";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
@@ -16,8 +17,9 @@ import { Badge } from "@/components/Badge";
 import { Progress } from "@/components/Progress";
 
 /* ─────────────────────────── types ─────────────────────────── */
-type Step = "register" | "evaluate";
-
+type Step = "login" | "evaluate";
+type LoginMode = "student" | "staff";
+ 
 interface EvalState {
   student: Student;
   form: EvaluationForm;
@@ -31,21 +33,66 @@ const POLY_SVG = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/s
 /* ════════════════════════ COMPONENT ════════════════════════════ */
 export default function StudentPage() {
   /* ── state (unchanged) ── */
-  const [step, setStep] = useState<Step>("register");
+  const router = useRouter();
+  const [step, setStep] = useState<Step>("login");
+  const [loginMode, setLoginMode] = useState<LoginMode>("student");
   const [evalState, setEvalState] = useState<EvalState | null>(null);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
+  const [groups, setGroups] = useState<{ id: string; name: string }[]>([]);
+  const [projectGroups, setProjectGroups] = useState<{ id: string; name: string }[]>([]);
 
-  const [regForm, setRegForm] = useState({
+  const [studentForm, setStudentForm] = useState({
     student_id: "",
     name: "",
     year: "",
     own_group: "",
   });
 
+  const [staffForm, setStaffForm] = useState({
+    username: "",
+    password: "",
+  });
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        setError(""); // Clear previous errors
+
+        // Fetch staff groups and project groups concurrently
+        const [groupsRes, projectsRes] = await Promise.all([
+          fetch("/api/groups"),
+          fetch("/api/projects") // Fetch project list for student dropdown
+        ]);
+
+        // Process staff groups (for staff form)
+        if (groupsRes.ok) {
+          const groupsData = await groupsRes.json();
+          if (Array.isArray(groupsData.groups)) {
+            setGroups(groupsData.groups);
+          }
+        }
+
+        // Process project groups (for student form)
+        if (!projectsRes.ok) {
+          throw new Error(`ไม่สามารถโหลดรายชื่อกลุ่มโปรเจคได้: ${projectsRes.statusText}`);
+        }
+        const projectsData = await projectsRes.json();
+        if (Array.isArray(projectsData.projects)) {
+          setProjectGroups(projectsData.projects);
+        } else {
+          throw new Error("รูปแบบข้อมูลกลุ่มโปรเจคไม่ถูกต้อง");
+        }
+      } catch (error) {
+        console.error("Error fetching initial data:", error);
+        setError(error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการโหลดข้อมูลเริ่มต้น");
+      }
+    };
+    fetchInitialData();
+  }, []);
   /* ── logic (unchanged) ── */
   const loadEvalState = useCallback(async (student: Student) => {
     const [formRes, projectsRes] = await Promise.all([
@@ -61,21 +108,64 @@ export default function StudentPage() {
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
-    if (!regForm.student_id || !regForm.name || !regForm.year || !regForm.own_group) {
+    setSubmitting(true);
+    if (!studentForm.student_id || !studentForm.name || !studentForm.year || !studentForm.own_group) {
       setError("กรุณากรอกข้อมูลให้ครบถ้วน");
+      setSubmitting(false);
       return;
     }
-    const res = await fetch("/api/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...regForm, year: Number(regForm.year) }),
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      setError(data.error ?? "เกิดข้อผิดพลาด");
+    try {
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...studentForm, year: Number(studentForm.year) }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error ?? "เกิดข้อผิดพลาด");
+      }
+      await loadEvalState(data.student);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleStaffLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError("");
+    setSubmitting(true);
+
+    if (!staffForm.username || !staffForm.password) {
+      setError("กรุณากรอกชื่อผู้ใช้และรหัสผ่าน");
+      setSubmitting(false);
       return;
     }
-    await loadEvalState(data.student);
+
+    try {
+      const res = await fetch('/api/staff-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: staffForm.username, password: staffForm.password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'เกิดข้อผิดพลาดบางอย่าง');
+      }
+
+      // Login successful
+      // For now, we'll just show an alert.
+      // In the next step, we would redirect or change the application state.
+      router.push('/admin');
+
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleSelectProject = (project: Project) => {
@@ -122,8 +212,8 @@ export default function StudentPage() {
     setSuccessMsg(`ประเมิน "${selectedProject.name}" เรียบร้อยแล้ว ✓`);
   };
 
-  /* ══════════════════════ REGISTER STEP ══════════════════════ */
-  if (step === "register") {
+  /* ══════════════════════ LOGIN STEP ══════════════════════ */
+  if (step === "login") {
     return (
       <div
         style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f1f5f9" }}
@@ -143,7 +233,7 @@ export default function StudentPage() {
           }}
         >
           {/* ── LEFT: form side ── */}
-          <div style={{ flex: "1 1 55%", padding: "48px 44px", display: "flex", flexDirection: "column", justifyContent: "center", gap: 28 }}>
+          <div style={{ flex: "1 1 55%", padding: "40px 44px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
             {/* Title */}
             <div style={{ marginBottom: 4 }}>
               <h1 style={{ fontSize: 28, fontWeight: 700, color: "#0f172a", margin: 0, letterSpacing: "-0.5px" }}>
@@ -154,82 +244,139 @@ export default function StudentPage() {
               </p>
             </div>
 
-            {/* Form */}
-            <form onSubmit={handleRegister} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              {/* Student ID */}
-              <div>
-                <label style={labelStyle}>รหัสนักศึกษา</label>
-                <input
-                  placeholder="เช่น 65012345"
-                  autoComplete="off"
-                  inputMode="numeric"
-                  value={regForm.student_id}
-                  onChange={(e) => setRegForm({ ...regForm, student_id: e.target.value })}
-                  style={inputStyle}
-                  onFocus={e => Object.assign(e.target.style, inputFocusStyle)}
-                  onBlur={e => Object.assign(e.target.style, inputStyle)}
-                />
-              </div>
+            {/* Login Mode Toggle */}
+            <div style={{ display: 'flex', gap: 4, background: '#f1f5f9', borderRadius: 10, padding: 4, margin: "24px 0" }}>
+              <button onClick={() => setLoginMode('student')} style={loginMode === 'student' ? tabActiveStyle : tabInactiveStyle}>นักศึกษา</button>
+              <button onClick={() => setLoginMode('staff')} style={loginMode === 'staff' ? tabActiveStyle : tabInactiveStyle}>เจ้าหน้าที่</button>
+            </div>
 
-              {/* Name */}
-              <div>
-                <label style={labelStyle}>ชื่อ-นามสกุล</label>
-                <input
-                  placeholder="ชื่อ นามสกุล"
-                  autoComplete="name"
-                  value={regForm.name}
-                  onChange={(e) => setRegForm({ ...regForm, name: e.target.value })}
-                  style={inputStyle}
-                  onFocus={e => Object.assign(e.target.style, inputFocusStyle)}
-                  onBlur={e => Object.assign(e.target.style, inputStyle)}
-                />
-              </div>
-
-              {/* Year + Group */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            {/* Student Form */}
+            {loginMode === 'student' && (
+              <form onSubmit={handleRegister} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                {/* Student ID */}
                 <div>
-                  <label style={labelStyle}>ชั้นปี</label>
+                  <label style={labelStyle}>รหัสนักศึกษา</label>
                   <input
-                    type="number"
-                    placeholder="1–4"
-                    min={1}
-                    max={6}
+                    placeholder="เช่น 65012345"
+                    autoComplete="off"
                     inputMode="numeric"
-                    value={regForm.year}
-                    onChange={(e) => setRegForm({ ...regForm, year: e.target.value })}
+                    value={studentForm.student_id}
+                    onChange={(e) => setStudentForm({ ...studentForm, student_id: e.target.value })}
                     style={inputStyle}
                     onFocus={e => Object.assign(e.target.style, inputFocusStyle)}
                     onBlur={e => Object.assign(e.target.style, inputStyle)}
                   />
                 </div>
-                <div>
-                  <label style={labelStyle}>รหัสกลุ่ม</label>
-                  <input
-                    placeholder="เช่น group1"
-                    value={regForm.own_group}
-                    onChange={(e) => setRegForm({ ...regForm, own_group: e.target.value })}
-                    style={inputStyle}
-                    onFocus={e => Object.assign(e.target.style, inputFocusStyle)}
-                    onBlur={e => Object.assign(e.target.style, inputStyle)}
-                  />
-                </div>
-              </div>
 
+                {/* Name */}
+                <div>
+                  <label style={labelStyle}>ชื่อ-นามสกุล</label>
+                  <input
+                    placeholder="ชื่อ นามสกุล"
+                    autoComplete="name"
+                    value={studentForm.name}
+                    onChange={(e) => setStudentForm({ ...studentForm, name: e.target.value })}
+                    style={inputStyle}
+                    onFocus={e => Object.assign(e.target.style, inputFocusStyle)}
+                    onBlur={e => Object.assign(e.target.style, inputStyle)}
+                  />
+                </div>
+
+                {/* Year + Group */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  <div>
+                    <label style={labelStyle}>ชั้นปี</label>
+                    <input
+                      type="number"
+                      placeholder="1–4"
+                      min={1}
+                      max={6}
+                      inputMode="numeric"
+                      value={studentForm.year}
+                      onChange={(e) => setStudentForm({ ...studentForm, year: e.target.value })}
+                      style={inputStyle}
+                      onFocus={e => Object.assign(e.target.style, inputFocusStyle)}
+                      onBlur={e => Object.assign(e.target.style, inputStyle)}
+                    />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>รหัสกลุ่ม</label>
+                    <select
+                      value={studentForm.own_group}
+                      onChange={(e) => setStudentForm({ ...studentForm, own_group: e.target.value })}
+                      style={inputStyle}
+                      onFocus={e => Object.assign(e.target.style, inputFocusStyle)}
+                      onBlur={e => Object.assign(e.target.style, inputStyle)}
+                    >
+                      <option value="" disabled>-- กรุณาเลือกกลุ่ม --</option>
+                      {projectGroups.map((project) => (
+                        <option key={project.id} value={project.id}>
+                          {project.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  style={{...submitBtnStyle, cursor: submitting ? 'not-allowed' : 'pointer', opacity: submitting ? 0.7 : 1}}
+                >
+                  {submitting ? 'กำลังตรวจสอบ...' : 'เข้าสู่ระบบ'}
+                </button>
+              </form>
+            )}
+
+            {/* Staff Form */}
+            {loginMode === 'staff' && (
+              <form onSubmit={handleStaffLogin} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                {/* Username */}
+                <div>
+                  <label style={labelStyle}>ชื่อผู้ใช้</label>
+                  <input
+                    placeholder="Username"
+                    autoComplete="username"
+                    value={staffForm.username}
+                    onChange={(e) => setStaffForm({ ...staffForm, username: e.target.value })}
+                    style={inputStyle}
+                    onFocus={e => Object.assign(e.target.style, inputFocusStyle)}
+                    onBlur={e => Object.assign(e.target.style, inputStyle)}
+                  />
+                </div>
+
+                {/* Password */}
+                <div>
+                  <label style={labelStyle}>รหัสผ่าน</label>
+                  <input
+                    type="password"
+                    placeholder="••••••••"
+                    autoComplete="current-password"
+                    value={staffForm.password}
+                    onChange={(e) => setStaffForm({ ...staffForm, password: e.target.value })}
+                    style={inputStyle}
+                    onFocus={e => Object.assign(e.target.style, inputFocusStyle)}
+                    onBlur={e => Object.assign(e.target.style, inputStyle)}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  style={{...submitBtnStyle, cursor: submitting ? 'not-allowed' : 'pointer', opacity: submitting ? 0.7 : 1}}
+                >
+                  {submitting ? 'กำลังตรวจสอบ...' : 'เข้าสู่ระบบ'}
+                </button>
+              </form>
+            )}
+
+            <div style={{ marginTop: 16 }}>
               {/* Error */}
               {error && (
                 <p style={{ fontSize: 13, color: "#dc2626", background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 8, padding: "8px 12px", margin: 0 }}>
                   {error}
                 </p>
               )}
-
-              {/* Submit */}
-              <button type="submit" style={submitBtnStyle}
-                onMouseEnter={e => Object.assign(e.currentTarget.style, { ...submitBtnStyle, opacity: "0.92", transform: "translateY(-1px)" })}
-                onMouseLeave={e => Object.assign(e.currentTarget.style, { ...submitBtnStyle, opacity: "1", transform: "translateY(0)" })}
-              >
-                เข้าสู่ระบบ
-              </button>
-            </form>
+            </div>
 
             <p style={{ fontSize: 11, color: "#cbd5e1", textAlign: "center", marginTop: 4 }}>
               CPES — Classroom Project Evaluation System
@@ -297,6 +444,8 @@ export default function StudentPage() {
   /* ══════════════════════ EVALUATE STEP ══════════════════════ */
   if (!evalState) return null;
   const { student, form, projects } = evalState;
+  const ownProject = projects.find((p) => p.id === student.own_group);
+  const ownGroupName = ownProject ? ownProject.name : student.own_group;
   const totalToEvaluate = projects.length - 1;
   const evaluatedCount = student.evaluated_projects.length;
   const progressPct = totalToEvaluate > 0 ? (evaluatedCount / totalToEvaluate) * 100 : 0;
@@ -327,7 +476,7 @@ export default function StudentPage() {
             }}>CP</span>
             <span style={{ fontWeight: 700, fontSize: 14, color: "#1e293b", flexShrink: 0 }}>CPES</span>
             <span style={{ color: "#94a3b8", fontSize: 12, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-              {student.name} · กลุ่ม {student.own_group}
+              {student.name} · กลุ่ม {ownGroupName}
             </span>
           </div>
 
@@ -666,4 +815,28 @@ const badgeDestructiveStyle: React.CSSProperties = {
   borderRadius: 6,
   padding: "2px 8px",
   border: "1px solid #fecaca",
+};
+
+const tabBaseStyle: React.CSSProperties = {
+  flex: 1,
+  padding: "8px 12px",
+  borderRadius: 8,
+  border: "none",
+  fontSize: 13,
+  fontWeight: 600,
+  cursor: "pointer",
+  transition: "all 0.2s ease",
+};
+
+const tabActiveStyle: React.CSSProperties = {
+  ...tabBaseStyle,
+  background: "#fff",
+  color: "#7c3aed",
+  boxShadow: "0 1px 3px rgba(0,0,0,0.05), 0 2px 8px rgba(0,0,0,0.05)",
+};
+
+const tabInactiveStyle: React.CSSProperties = {
+  ...tabBaseStyle,
+  background: "transparent",
+  color: "#64748b",
 };
