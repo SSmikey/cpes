@@ -2,18 +2,18 @@
 
 import { useState, useCallback } from "react";
 import type { Project, EvaluationForm, Student } from "@/types";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/components/Button";
+import { Input } from "@/components/Input";
+import { Label } from "@/components/Label";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+} from "@/components/Card";
+import { Badge } from "@/components/Badge";
+import { Progress } from "@/components/Progress";
 
 type Step = "register" | "evaluate";
 
@@ -294,11 +294,10 @@ export default function StudentPage() {
                             aria-label={`คะแนน ${score}`}
                             aria-pressed={answers[q.id] === score}
                             onClick={() => setAnswers({ ...answers, [q.id]: score })}
-                            className={`w-10 h-10 rounded-lg border-2 text-sm font-semibold transition-colors transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 ${
-                              answers[q.id] === score
+                            className={`w-10 h-10 rounded-lg border-2 text-sm font-semibold transition-colors transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 ${answers[q.id] === score
                                 ? "bg-primary text-primary-foreground border-primary shadow-sm scale-110"
                                 : "bg-background hover:bg-muted border-border hover:border-primary/40"
-                            }`}
+                              }`}
                           >
                             {score}
                           </button>
@@ -346,13 +345,12 @@ export default function StudentPage() {
                     key={project.id}
                     disabled={!canEvaluate}
                     onClick={() => canEvaluate && handleSelectProject(project)}
-                    className={`w-full text-left rounded-xl border px-4 py-3 transition-colors flex items-center justify-between gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 ${
-                      isSelected
+                    className={`w-full text-left rounded-xl border px-4 py-3 transition-colors flex items-center justify-between gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 ${isSelected
                         ? "border-primary bg-primary/5 ring-1 ring-primary shadow-sm"
                         : canEvaluate
-                        ? "bg-card hover:border-primary/50 hover:bg-muted/50 hover:shadow-sm cursor-pointer"
-                        : "bg-card opacity-50 cursor-default"
-                    }`}
+                          ? "bg-card hover:border-primary/50 hover:bg-muted/50 hover:shadow-sm cursor-pointer"
+                          : "bg-card opacity-50 cursor-default"
+                      }`}
                   >
                     <span className={`font-medium text-sm ${isSelected ? "text-primary" : ""}`}>
                       {project.name}

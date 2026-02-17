@@ -4,19 +4,19 @@ import { useState, useEffect } from "react";
 import type { EvaluationForm, Question } from "@/types";
 import { ClipboardList, PlusIcon, CopyIcon, Edit3Icon, ChevronDownIcon, ClockIcon, Trash2Icon } from "lucide-react";
 import { AdminNav } from "@/components/admin-nav";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/Button";
+import { Input } from "@/components/Input";
+import { Label } from "@/components/Label";
+import { Textarea } from "@/components/Textarea";
+import { Switch } from "@/components/Switch";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+} from "@/components/Card";
+import { Badge } from "@/components/Badge";
 import {
   Dialog,
   DialogContent,
@@ -24,7 +24,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from "@/components/Dialog";
 import {
   Table,
   TableBody,
@@ -32,7 +32,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/Table";
 
 export default function FormManagement() {
   const [forms, setForms] = useState<EvaluationForm[]>([]);
@@ -417,10 +417,9 @@ export default function FormManagement() {
                                 <TableCell className="text-center">
                                   <Switch
                                     checked={q.active}
-                                    onCheckedChange={(val) =>
-                                      handleToggleQuestion(form, q.id, val)
+                                    onChange={(e) =>
+                                      handleToggleQuestion(form, q.id, e.target.checked)
                                     }
-                                    className="data-[state=checked]:bg-emerald-500"
                                   />
                                 </TableCell>
                                 <TableCell className="text-right pr-8">
@@ -460,7 +459,7 @@ export default function FormManagement() {
 
 
       {/* Clone Dialog */}
-      <Dialog open={!!cloneDialog} onOpenChange={(open) => { if (!open) { setCloneDialog(null); setCloneTitle(""); } }}>
+      <Dialog open={!!cloneDialog}>
         <DialogContent className="max-w-md bg-white/90 backdrop-blur-2xl rounded-none border-white/60 shadow-2xl p-8">
           <DialogHeader className="space-y-3">
             <div className="size-12 rounded-2xl bg-indigo-50 flex items-center justify-center mb-2">
@@ -510,7 +509,7 @@ export default function FormManagement() {
       </Dialog>
 
       {/* New Form Dialog */}
-      <Dialog open={showNewForm} onOpenChange={setShowNewForm}>
+      <Dialog open={showNewForm}>
         <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-white/95 backdrop-blur-3xl rounded-none border-white/60 shadow-2xl p-0 overflow-hidden">
           <div className="bg-gradient-to-r from-slate-900 to-slate-800 p-8 text-white">
             <div className="flex items-center gap-4 mb-4">

@@ -20,15 +20,15 @@ import {
   FileTextIcon
 } from "lucide-react";
 import { AdminNav } from "@/components/admin-nav";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/Button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
+} from "@/components/Select";
+import { Badge } from "@/components/Badge";
 
 interface StatsData {
   form_id: string;
@@ -101,17 +101,12 @@ export default function AdminDashboard() {
               <span className="text-sm font-bold text-indigo-900 uppercase tracking-wide">แบบประเมิน</span>
             </div>
             <div className="relative">
-              <Select value={selectedFormId} onValueChange={setSelectedFormId}>
-                <SelectTrigger className="w-80 h-12 bg-white border-white ring-1 ring-indigo-50 shadow-sm shadow-indigo-100/50 text-slate-700 font-bold rounded-md hover:bg-slate-50 hover:border-indigo-200 transition-all text-base px-4">
-                  <SelectValue placeholder="เลือก Form" />
-                </SelectTrigger>
-                <SelectContent className="border-indigo-100 shadow-xl rounded-none p-1 bg-white/95 backdrop-blur-lg">
-                  {forms.map((f) => (
-                    <SelectItem key={f.form_id} value={f.form_id} className="rounded-none focus:bg-indigo-50 focus:text-indigo-700 cursor-pointer py-3 my-0.5 font-medium text-slate-600">
-                      {f.title} <span className="text-xs ml-2 px-2 py-0.5 rounded-sm bg-emerald-100 text-emerald-700 font-bold hidden data-[active=true]:inline-block" data-active={f.active}>ACTIVE</span>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
+              <Select value={selectedFormId} onChange={(e: any) => setSelectedFormId(e.target.value)}>
+                {forms.map((f) => (
+                  <SelectItem key={f.form_id} value={f.form_id}>
+                    {f.title}
+                  </SelectItem>
+                ))}
               </Select>
               {loading && (
                 <div className="absolute right-12 top-1/2 -translate-y-1/2 pointer-events-none">
