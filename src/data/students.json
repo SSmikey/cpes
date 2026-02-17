@@ -22,5 +22,13 @@
       "group5"
     ],
     "created_at": "2026-02-16T20:03:39.037Z"
+  },
+  {
+    "student_id": "6712732125",
+    "name": "waranya chimngam",
+    "year": 2,
+    "own_group": "group 2",
+    "evaluated_projects": [],
+    "created_at": "2026-02-17T09:06:06.829Z"
   }
 ]
