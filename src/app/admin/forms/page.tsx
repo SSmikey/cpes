@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import type { EvaluationForm, Question } from "@/types";
-import { ClipboardList, PlusIcon, CopyIcon, Edit3Icon, ChevronDownIcon, ClockIcon, Trash2Icon } from "lucide-react";
+import { ClipboardList, PlusIcon, CopyIcon, Edit3Icon, ChevronDownIcon, ClockIcon, Trash2Icon, Activity, ArrowUpRight } from "lucide-react";
 import { AdminNav } from "@/components/admin-nav";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
@@ -189,31 +189,40 @@ export default function FormManagement() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#e0e7ff] via-[#f0f4ff] to-[#e8eaff] font-sans selection:bg-indigo-100 selection:text-indigo-900 pb-20 flex flex-col items-center">
+    <div className="min-h-screen bg-slate-50/50 font-sans selection:bg-indigo-100 pb-24 overflow-x-hidden">
       <AdminNav />
-      <div className="pt-32 px-4 md:px-12 max-w-7xl mx-auto w-full space-y-8">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pt-8 pb-4">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-gradient-to-br from-indigo-600 to-indigo-700 rounded-2xl shadow-lg shadow-indigo-200 ring-4 ring-white/50">
-              <ClipboardList className="size-8 text-white" />
+
+      {/* Hero Header Section */}
+      <div className="bg-white border-b border-slate-200 shadow-sm relative overflow-hidden">
+        <div className="absolute top-0 right-0 -mt-24 -mr-24 size-96 bg-indigo-50/50 rounded-full blur-3xl opacity-60" />
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-10 relative z-10">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+            <div className="flex items-start gap-5">
+              <div className="p-4 bg-indigo-600 rounded-2xl shadow-xl shadow-indigo-100 font-bold">
+                <ClipboardList className="size-8 text-white" />
+              </div>
+              <div className="space-y-1">
+                <h1 className="text-3xl font-black text-slate-900 tracking-tight">
+                  จัดการแบบประเมิน
+                </h1>
+                <div className="flex items-center gap-2 text-slate-500 font-medium">
+                  <ClockIcon className="size-4 text-indigo-500" />
+                  <span>สร้าง แก้ไข และตั้งค่าช่วงเวลาการประเมิน</span>
+                </div>
+              </div>
             </div>
-            <div>
-              <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 drop-shadow-sm">
-                จัดการแบบประเมิน
-              </h1>
-              <p className="text-indigo-600/80 font-medium text-sm">
-                สร้าง แก้ไข และ activate แบบประเมิน
-              </p>
-            </div>
+
+            <Button
+              onClick={() => setShowNewForm(true)}
+              className="h-12 px-8 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white shadow-lg shadow-slate-200 border-0 font-black tracking-tight transition-all active:scale-95"
+            >
+              <PlusIcon className="mr-2 size-5 stroke-[3]" /> สร้างแบบระเมินใหม่
+            </Button>
           </div>
-          <Button
-            onClick={() => setShowNewForm(true)}
-            className="rounded-xl bg-slate-900 hover:bg-slate-800 text-white shadow-lg shadow-slate-200 border-0 h-11 px-6 font-semibold tracking-wide transition-all hover:-translate-y-0.5"
-          >
-            <PlusIcon className="mr-2 size-4 stroke-[3]" /> สร้างแบบประเมินใหม่
-          </Button>
         </div>
+      </div>
+
+      <main className="max-w-7xl mx-auto px-6 lg:px-12 pt-12 space-y-8 animate-in fade-in fill-mode-both duration-700">
 
         {/* Form list */}
         {forms.length === 0 ? (
@@ -231,12 +240,12 @@ export default function FormManagement() {
             <div
               key={form.form_id}
               className={`
-                group relative bg-white/70 backdrop-blur-2xl rounded-none border shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden transition-all duration-300
-                ${form.active ? 'border-indigo-200 ring-4 ring-indigo-50/50' : 'border-white/60 hover:shadow-lg'}
+                group bg-white rounded-3xl border shadow-sm overflow-hidden transition-all duration-300
+                ${form.active ? 'border-indigo-200 ring-4 ring-indigo-50/50' : 'border-slate-200 hover:shadow-xl hover:shadow-slate-200/50'}
               `}
             >
               {/* Card Header Content */}
-              <div className="px-10 py-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="px-8 py-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
 
                 {/* Title & Status */}
                 <div className="flex-1 space-y-2">
@@ -318,10 +327,10 @@ export default function FormManagement() {
 
               {/* Expanded question editor */}
               {expandedForm === form.form_id && (
-                <div className="border-t border-indigo-50/50 bg-slate-50/30 animate-in fade-in slide-in-from-top-2 duration-300">
-                  <div className="px-10 py-8 space-y-8">
+                <div className="border-t border-slate-100 bg-slate-50/50 animate-in fade-in slide-in-from-top-2 duration-300">
+                  <div className="px-8 py-8 space-y-8">
                     {/* Deadline Editor */}
-                    <div className="bg-white/60 p-6 rounded-none border border-white shadow-sm flex flex-wrap items-center gap-4">
+                    <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-wrap items-center gap-4">
                       <div className="flex items-center gap-2 text-indigo-900/70 font-bold text-sm uppercase tracking-wide">
                         <ClockIcon className="size-4" /> Deadline Setting
                       </div>
@@ -354,7 +363,7 @@ export default function FormManagement() {
                     </div>
 
                     {/* Questions Table */}
-                    <div className="bg-white rounded-none border border-slate-100 shadow-sm overflow-hidden">
+                    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
                       <div className="px-8 py-4 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between">
                         <h4 className="font-bold text-slate-700 text-sm uppercase tracking-wider">Form Questions</h4>
                         <Badge variant="secondary" className="bg-indigo-50 text-indigo-600 border-indigo-100 rounded-md">
@@ -418,7 +427,7 @@ export default function FormManagement() {
                                   <Switch
                                     checked={q.active}
                                     onChange={(e) =>
-                                      handleToggleQuestion(form, q.id, e.target.checked)
+                                      handleToggleQuestion(form, q.id, (e.target as HTMLInputElement).checked)
                                     }
                                   />
                                 </TableCell>
@@ -430,7 +439,7 @@ export default function FormManagement() {
                                       <Button
                                         size="sm"
                                         variant="ghost"
-                                        className="h-8 w-8 p-0 rounded-lg hover:bg-indigo-50 hover:text-indigo-600"
+                                        className="h-8 w-8 p-0 rounded-lg hover:bg-slate-50 hover:text-indigo-600"
                                         onClick={() =>
                                           setEditingQuestion({
                                             formId: form.form_id,
@@ -454,55 +463,58 @@ export default function FormManagement() {
             </div>
           ))
         )}
-      </div>
+      </main>
 
 
 
       {/* Clone Dialog */}
       <Dialog open={!!cloneDialog}>
-        <DialogContent className="max-w-md bg-white/90 backdrop-blur-2xl rounded-none border-white/60 shadow-2xl p-8">
-          <DialogHeader className="space-y-3">
-            <div className="size-12 rounded-2xl bg-indigo-50 flex items-center justify-center mb-2">
-              <CopyIcon className="size-6 text-indigo-600" />
+        <DialogContent className="max-w-md bg-white/95 backdrop-blur-2xl rounded-[2.5rem] border-white/60 shadow-2xl p-8 overflow-hidden relative">
+          <div className="absolute top-0 right-0 -mt-10 -mr-10 size-40 bg-indigo-50 rounded-full blur-3xl opacity-50" />
+          <DialogHeader className="space-y-4 relative z-10">
+            <div className="size-14 rounded-3xl bg-indigo-600 flex items-center justify-center mb-2 shadow-lg shadow-indigo-100">
+              <CopyIcon className="size-7 text-white" />
             </div>
-            <DialogTitle className="text-2xl font-bold text-slate-900 tracking-tight">Clone แบบประเมิน</DialogTitle>
-            <DialogDescription className="text-slate-500 font-medium">
-              ตั้งชื่อใหม่สำหรับแบบประเมินที่คุณกำลังคัดลอก
-            </DialogDescription>
+            <div>
+              <DialogTitle className="text-2xl font-black text-slate-900 tracking-tight">Clone แบบประเมิน</DialogTitle>
+              <DialogDescription className="text-slate-500 font-medium">
+                คัดลอกคำถามและตั้งค่าจาก <span className="text-indigo-600 font-bold">"{cloneDialog?.sourceTitle}"</span> ไปยังแบบประเมินใหม่
+              </DialogDescription>
+            </div>
           </DialogHeader>
-          <div className="py-6 space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="clone-title" className="text-slate-700 font-bold ml-1">ชื่อแบบประเมินใหม่</Label>
+          <div className="py-8 space-y-4 relative z-10">
+            <div className="space-y-3">
+              <Label htmlFor="clone-title" className="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Proposed Title</Label>
               <Input
                 id="clone-title"
                 value={cloneTitle}
                 onChange={(e) => setCloneTitle(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter") handleConfirmClone(); }}
                 autoFocus
-                className="h-12 bg-white/50 border-slate-200 focus:border-indigo-500 focus:ring-indigo-100 rounded-xl px-4 text-base"
+                className="h-14 bg-slate-50 border-slate-200 focus:border-indigo-500 focus:ring-indigo-100 rounded-2xl px-5 text-lg font-bold text-slate-700"
                 placeholder="ระบุชื่อแบบประเมินใหม่..."
               />
             </div>
           </div>
-          <DialogFooter className="gap-3 sm:gap-0">
+          <DialogFooter className="gap-3 relative z-10 flex-col sm:flex-row">
             <Button
               variant="ghost"
               onClick={() => { setCloneDialog(null); setCloneTitle(""); }}
-              className="rounded-xl h-11 px-6 font-semibold text-slate-500 hover:bg-slate-100"
+              className="h-12 rounded-2xl font-bold text-slate-400 hover:bg-slate-50 flex-1"
             >
               ยกเลิก
             </Button>
             <Button
               onClick={handleConfirmClone}
               disabled={cloning || !cloneTitle.trim()}
-              className="rounded-xl h-11 px-8 font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-100 border-0"
+              className="h-12 rounded-2xl font-black bg-indigo-600 hover:bg-indigo-700 text-white shadow-xl shadow-indigo-100 border-0 flex-[2]"
             >
               {cloning ? (
                 <div className="flex items-center gap-2">
                   <div className="size-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
                   กำลังคัดลอก...
                 </div>
-              ) : "ยืนยัน Clone"}
+              ) : "ยืนยันการคัดลอก"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -510,88 +522,92 @@ export default function FormManagement() {
 
       {/* New Form Dialog */}
       <Dialog open={showNewForm}>
-        <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-white/95 backdrop-blur-3xl rounded-none border-white/60 shadow-2xl p-0 overflow-hidden">
-          <div className="bg-gradient-to-r from-slate-900 to-slate-800 p-8 text-white">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="p-3 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20">
-                <PlusIcon className="size-6 text-white" />
+        <DialogContent className="max-w-xl max-h-[95vh] overflow-y-auto bg-white/95 backdrop-blur-3xl rounded-[2.5rem] border-white/60 shadow-2xl p-0 overflow-hidden outline-none">
+          <div className="bg-gradient-to-br from-slate-900 to-indigo-950 p-10 text-white relative">
+            <div className="absolute top-0 right-0 -mt-10 -mr-10 size-40 bg-indigo-500 rounded-full blur-3xl opacity-20" />
+            <div className="flex items-center gap-5 relative z-10">
+              <div className="p-4 bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-xl">
+                <PlusIcon className="size-8 text-white stroke-[3]" />
               </div>
-              <div>
-                <DialogTitle className="text-2xl font-bold tracking-tight">สร้างแบบประเมินใหม่</DialogTitle>
-                <DialogDescription className="text-slate-300 font-medium">
-                  เริ่มสร้างแบบฟอร์มประเมินโดยใส่รายละเอียดและคำถาม
+              <div className="space-y-1">
+                <DialogTitle className="text-3xl font-black tracking-tight">สร้างแบบประเมินใหม่</DialogTitle>
+                <DialogDescription className="text-slate-400 font-medium">
+                  กำหนดค่าเริ่มต้นและรายการคำถามสำหรับโครงการ
                 </DialogDescription>
               </div>
             </div>
           </div>
 
-          <div className="p-8 space-y-8">
-            <div className="space-y-6">
+          <div className="p-10 space-y-10">
+            <div className="space-y-8">
               {/* Form Title */}
-              <div className="space-y-2">
-                <Label className="text-slate-700 font-bold ml-1">ชื่อแบบประเมิน</Label>
+              <div className="space-y-3">
+                <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Evaluation Title</Label>
                 <Input
                   placeholder="เช่น แบบประเมินผลงานโครงงานปี 2569"
                   value={newFormData.title}
                   onChange={(e) => setNewFormData({ ...newFormData, title: e.target.value })}
-                  className="h-12 bg-slate-50 border-slate-200 focus:border-indigo-500 rounded-xl px-4"
+                  className="h-14 bg-slate-50 border-slate-200 focus:border-indigo-500 rounded-2xl px-5 text-lg font-bold text-slate-700"
                 />
               </div>
 
               {/* Scale & Deadline Row */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label className="text-slate-700 font-bold ml-1 text-sm uppercase tracking-wide">ช่วงคะแนนประเมิน (Scale)</Label>
-                  <div className="flex items-center gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                <div className="space-y-3">
+                  <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Scoring Scale</Label>
+                  <div className="flex items-center gap-3">
                     <Input
                       type="number"
                       placeholder="Min"
                       value={newFormData.scaleMin}
                       onChange={(e) => setNewFormData({ ...newFormData, scaleMin: e.target.value })}
-                      className="h-11 bg-slate-50 border-slate-200 focus:border-indigo-500 rounded-xl text-center font-bold"
+                      className="h-12 bg-slate-50 border-slate-200 focus:border-indigo-500 rounded-2xl text-center font-black text-xl text-indigo-600"
                     />
-                    <span className="text-slate-400 font-bold">—</span>
+                    <div className="h-px w-4 bg-slate-200" />
                     <Input
                       type="number"
                       placeholder="Max"
                       value={newFormData.scaleMax}
                       onChange={(e) => setNewFormData({ ...newFormData, scaleMax: e.target.value })}
-                      className="h-11 bg-slate-50 border-slate-200 focus:border-indigo-500 rounded-xl text-center font-bold"
+                      className="h-12 bg-slate-50 border-slate-200 focus:border-indigo-500 rounded-2xl text-center font-black text-xl text-indigo-600"
                     />
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-slate-700 font-bold ml-1 text-sm uppercase tracking-wide">กำหนดส่ง (Deadline)</Label>
+                <div className="space-y-3">
+                  <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Deadline Date</Label>
                   <Input
                     type="datetime-local"
                     value={newFormData.deadline}
                     onChange={(e) => setNewFormData({ ...newFormData, deadline: e.target.value })}
-                    className="h-11 bg-slate-50 border-slate-200 focus:border-indigo-500 rounded-none font-medium accent-indigo-600"
+                    className="h-12 bg-slate-50 border-slate-200 focus:border-indigo-500 rounded-2xl font-bold px-4 accent-indigo-600"
                   />
                 </div>
               </div>
 
               {/* Questions Section */}
-              <div className="space-y-4 pt-4 border-t border-slate-100">
-                <div className="flex items-center justify-between mb-2">
-                  <Label className="text-slate-900 font-black text-lg">รายการคำถาม</Label>
-                  <span className="bg-indigo-100 text-indigo-700 font-bold text-xs px-2.5 py-1 rounded-md border border-indigo-200">
+              <div className="space-y-6 pt-6 border-t border-slate-100">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Activity className="size-5 text-indigo-500" />
+                    <h4 className="font-black text-slate-800 text-lg tracking-tight">รายการคำถาม</h4>
+                  </div>
+                  <Badge variant="secondary" className="bg-indigo-50 text-indigo-600 font-black px-3 py-1 rounded-full border border-indigo-100">
                     {newFormData.questions.length} ข้อ
-                  </span>
+                  </Badge>
                 </div>
 
-                <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="space-y-4 max-h-[350px] overflow-y-auto pr-3 custom-scrollbar">
                   {newFormData.questions.map((q, i) => (
-                    <div key={i} className="group relative bg-slate-50/50 p-4 rounded-none border border-slate-100 transition-all hover:bg-white hover:shadow-sm">
-                      <div className="flex gap-3">
-                        <div className="size-6 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-xs font-black text-slate-400 shrink-0 mt-1 shadow-sm">
-                          {i + 1}
-                        </div>
+                    <div key={i} className="group flex items-start gap-4">
+                      <div className="size-10 rounded-2xl bg-slate-100 flex items-center justify-center text-sm font-black text-slate-400 shrink-0 mt-2 border border-slate-200 group-hover:bg-indigo-50 group-hover:text-indigo-500 transition-colors">
+                        {(i + 1).toString().padStart(2, '0')}
+                      </div>
+                      <div className="flex-1 bg-slate-50 p-4 rounded-3xl border border-slate-100 focus-within:border-indigo-200 focus-within:bg-white focus-within:ring-4 focus-within:ring-indigo-50 transition-all relative">
                         <Textarea
-                          placeholder={`พิมพ์คำถามข้อที่ ${i + 1}...`}
+                          placeholder={`พิมพ์คำถาม...`}
                           value={q.text}
                           rows={2}
-                          className="flex-1 bg-transparent border-0 focus-visible:ring-0 p-0 text-slate-700 font-medium resize-none text-base placeholder:text-slate-300"
+                          className="bg-transparent border-0 focus-visible:ring-0 p-0 text-slate-700 font-bold resize-none text-base placeholder:text-slate-300 w-full"
                           onChange={(e) => {
                             const qs = [...newFormData.questions];
                             qs[i] = { text: e.target.value };
@@ -602,13 +618,13 @@ export default function FormManagement() {
                           <Button
                             size="sm"
                             variant="ghost"
-                            className="size-8 p-0 rounded-lg text-slate-300 hover:text-red-500 hover:bg-red-50 transition-colors"
+                            className="absolute -top-2 -right-2 size-8 p-0 rounded-full bg-white border border-slate-200 shadow-sm text-slate-300 hover:text-red-500 hover:bg-red-50 hover:border-red-100 transition-all opacity-0 group-hover:opacity-100"
                             onClick={() => {
                               const qs = newFormData.questions.filter((_, idx) => idx !== i);
                               setNewFormData({ ...newFormData, questions: qs });
                             }}
                           >
-                            <Trash2Icon className="size-4" />
+                            <Trash2Icon className="size-3.5" />
                           </Button>
                         )}
                       </div>
@@ -619,7 +635,7 @@ export default function FormManagement() {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full h-12 border-dashed border-2 border-slate-200 rounded-2xl hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600 font-bold text-slate-500 transition-all"
+                  className="w-full h-14 border-dashed border-2 border-slate-200 rounded-3xl hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600 font-black text-slate-400 transition-all flex items-center justify-center gap-2 group"
                   onClick={() =>
                     setNewFormData({
                       ...newFormData,
@@ -627,42 +643,46 @@ export default function FormManagement() {
                     })
                   }
                 >
-                  <PlusIcon className="size-4 mr-2" /> เพิ่มคำถามใหม่
+                  <PlusIcon className="size-5 group-hover:scale-125 transition-transform" /> เพิ่มคำถามใหม่
                 </Button>
               </div>
 
               {newFormError && (
-                <div className="p-4 bg-red-50 rounded-2xl border border-red-100 text-red-600 text-sm font-bold flex items-center gap-2">
-                  <div className="size-2 rounded-full bg-red-500" />
+                <div className="p-5 bg-red-50 rounded-3xl border border-red-100 text-red-600 text-sm font-black flex items-center gap-3 animate-bounce">
+                  <div className="size-2 rounded-full bg-red-500 shadow-lg shadow-red-200" />
                   {newFormError}
                 </div>
               )}
             </div>
 
-            <div className="flex items-center gap-3 pt-4">
+            <div className="flex items-center gap-4 pt-4">
               <Button
                 variant="ghost"
                 onClick={() => setShowNewForm(false)}
-                className="flex-1 h-12 rounded-2xl font-bold text-slate-500 hover:bg-slate-100"
+                className="flex-1 h-14 rounded-3xl font-black text-slate-400 hover:bg-slate-50 transition-colors"
               >
                 ยกเลิก
               </Button>
               <Button
                 onClick={handleCreateForm}
                 disabled={saving}
-                className="flex-[2] h-12 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black shadow-lg shadow-indigo-100 transition-all active:scale-95"
+                className="flex-[2] h-14 rounded-3xl bg-indigo-600 hover:bg-indigo-700 text-white font-black shadow-2xl shadow-indigo-200 transition-all active:scale-95 flex items-center justify-center gap-3"
               >
                 {saving ? (
-                  <div className="flex items-center gap-2">
-                    <div className="size-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-                    กำลังบันทึก...
-                  </div>
-                ) : "สร้างแบบประเมิน"}
+                  <>
+                    <div className="size-5 rounded-full border-3 border-white/30 border-t-white animate-spin" />
+                    กำลังบันทึกข้อมูล...
+                  </>
+                ) : (
+                  <>
+                    สร้างแบบประเมินเดี๋ยวนี้ <ArrowUpRight className="size-5" />
+                  </>
+                )}
               </Button>
             </div>
           </div>
         </DialogContent>
       </Dialog>
-    </div >
+    </div>
   );
 }
