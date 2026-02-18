@@ -459,24 +459,31 @@ export default function StudentPage() {
       {/* ── Top bar ── */}
       <header style={{
         position: "sticky", top: 0, zIndex: 40,
-        background: "rgba(255,255,255,0.95)",
-        backdropFilter: "blur(12px)",
-        borderBottom: "1px solid #e2e8f0",
+        background: "rgba(255,255,255,0.80)",
+        backdropFilter: "blur(20px)",
+        borderBottom: "1px solid rgba(99,102,241,0.08)",
         boxShadow: "0 1px 12px rgba(109,40,217,0.07)",
       }}>
-        <div style={{ maxWidth: 768, margin: "0 auto", padding: "0 20px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
+        <div style={{ maxWidth: 1920, margin: "0 auto", padding: "0 48px", height: 80, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
           {/* Logo + name */}
-          <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 14, minWidth: 0 }}>
             <span style={{
               display: "inline-flex", alignItems: "center", justifyContent: "center",
-              width: 32, height: 32, borderRadius: 8,
+              width: 48, height: 48, borderRadius: "50%",
               background: GRAD,
-              color: "#fff", fontSize: 12, fontWeight: 800, letterSpacing: "-0.5px",
+              color: "#fff", fontSize: 20, fontWeight: 900,
               flexShrink: 0,
-            }}>CP</span>
-            <span style={{ fontWeight: 700, fontSize: 14, color: "#1e293b", flexShrink: 0 }}>CPES</span>
-            <span style={{ color: "#94a3b8", fontSize: 12, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-              {student.name} · กลุ่ม {ownGroupName}
+              boxShadow: "0 4px 12px rgba(99,102,241,0.3)",
+            }}>C</span>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <span style={{ fontWeight: 800, fontSize: 20, color: "#1e293b", lineHeight: 1, letterSpacing: "-0.5px" }}>CPES</span>
+              <span style={{ fontSize: 10, fontWeight: 700, color: "#94a3b8", letterSpacing: "0.2em", textTransform: "uppercase", marginTop: 4 }}>Student</span>
+            </div>
+
+            <div style={{ width: 1, height: 40, background: "#e2e8f0", margin: "0 8px", flexShrink: 0 }} />
+
+            <span style={{ color: "#64748b", fontSize: 14, fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              {student.name} · <span style={{ color: "#6366f1", fontWeight: 700 }}>{ownGroupName}</span>
             </span>
           </div>
 
@@ -485,10 +492,10 @@ export default function StudentPage() {
             {isDeadlinePassed && (
               <span style={badgeDestructiveStyle}>ปิดรับแล้ว</span>
             )}
-            <span style={{ fontSize: 12, color: "#64748b", fontFamily: "monospace" }}>
+            <span style={{ fontSize: 13, color: "#64748b", fontWeight: 700, fontFamily: "monospace" }}>
               {evaluatedCount}/{totalToEvaluate}
             </span>
-            <div style={{ width: 72, height: 6, borderRadius: 99, background: "#e2e8f0", overflow: "hidden" }}>
+            <div style={{ width: 80, height: 6, borderRadius: 99, background: "#e2e8f0", overflow: "hidden" }}>
               <div style={{ height: "100%", width: `${progressPct}%`, background: GRAD, borderRadius: 99, transition: "width 0.4s ease" }} />
             </div>
           </div>
