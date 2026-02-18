@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { LayoutDashboard, ClipboardList, ArrowLeft } from "lucide-react";
+import { LayoutDashboard, ClipboardList, Layers, ArrowLeft } from "lucide-react";
 
 export function AdminNav() {
   const pathname = usePathname();
@@ -11,6 +11,7 @@ export function AdminNav() {
   const links = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
     { href: "/admin/forms", label: "จัดการประเมิน", icon: ClipboardList },
+    { href: "/admin/groups", label: "จัดการกลุ่ม", icon: Layers },
   ];
 
   return (
