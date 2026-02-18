@@ -58,9 +58,9 @@ export const Select = ({ value, onChange, children, className = "", placeholder 
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                        animate={{ opacity: 1, scale: 1, y: 4 }}
-                        exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                        initial={{ opacity: 0, scale: 0.95, y: -4 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95, y: -4 }}
                         transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
                         className="absolute z-50 mt-1 max-h-64 w-full overflow-hidden rounded-2xl border border-slate-100 bg-white/95 backdrop-blur-xl p-1 shadow-2xl shadow-indigo-200/40"
                     >

@@ -81,7 +81,7 @@ export default function AdminDashboard() {
       <AdminNav />
 
       {/* Hero Header Section */}
-      <div className="bg-white border-b border-slate-200/60 shadow-sm relative overflow-hidden">
+      <div className="bg-white border-b border-slate-200/60 shadow-sm relative">
         <div className="absolute top-0 right-0 -mt-24 -mr-24 size-96 bg-indigo-50/40 rounded-full blur-3xl opacity-60" />
         <div className="absolute bottom-0 left-0 -mb-24 -ml-24 size-96 bg-blue-50/40 rounded-full blur-3xl opacity-60" />
 
