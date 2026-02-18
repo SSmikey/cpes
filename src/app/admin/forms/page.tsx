@@ -25,6 +25,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/Dialog";
+import { DateTimePicker } from "@/components/ui/date-time-picker";
 import {
   Table,
   TableBody,
@@ -542,7 +543,7 @@ export default function FormManagement() {
             <div className="space-y-8">
               {/* Form Title */}
               <div className="space-y-3">
-                <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Evaluation Title</Label>
+                <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">ชื่อแบบประเมิน</Label>
                 <Input
                   placeholder="เช่น แบบประเมินผลงานโครงงานปี 2569"
                   value={newFormData.title}
@@ -554,11 +555,11 @@ export default function FormManagement() {
               {/* Scale & Deadline Row */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                 <div className="space-y-3">
-                  <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Scoring Scale</Label>
+                  <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">ระดับคะแนน</Label>
                   <div className="flex items-center gap-3">
                     <Input
                       type="number"
-                      placeholder="Min"
+                      placeholder="ต่ำสุด"
                       value={newFormData.scaleMin}
                       onChange={(e) => setNewFormData({ ...newFormData, scaleMin: e.target.value })}
                       className="h-12 bg-slate-50 border-slate-200 focus:border-indigo-500 rounded-2xl text-center font-black text-xl text-indigo-600"
@@ -566,7 +567,7 @@ export default function FormManagement() {
                     <div className="h-px w-4 bg-slate-200" />
                     <Input
                       type="number"
-                      placeholder="Max"
+                      placeholder="สูงสุด"
                       value={newFormData.scaleMax}
                       onChange={(e) => setNewFormData({ ...newFormData, scaleMax: e.target.value })}
                       className="h-12 bg-slate-50 border-slate-200 focus:border-indigo-500 rounded-2xl text-center font-black text-xl text-indigo-600"
@@ -574,12 +575,10 @@ export default function FormManagement() {
                   </div>
                 </div>
                 <div className="space-y-3">
-                  <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Deadline Date</Label>
-                  <Input
-                    type="datetime-local"
+                  <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">วันกำหนดส่ง</Label>
+                  <DateTimePicker
                     value={newFormData.deadline}
-                    onChange={(e) => setNewFormData({ ...newFormData, deadline: e.target.value })}
-                    className="h-12 bg-slate-50 border-slate-200 focus:border-indigo-500 rounded-2xl font-bold px-4 accent-indigo-600"
+                    onChange={(v) => setNewFormData({ ...newFormData, deadline: v })}
                   />
                 </div>
               </div>
