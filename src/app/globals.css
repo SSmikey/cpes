@@ -123,6 +123,8 @@
 :root {
   --font-inter: var(--font-inter);
   --font-sarabun: var(--font-sarabun);
+  --font-prompt: var(--font-prompt);
+  --font-kanit: var(--font-kanit);
 }
 
 html,
@@ -131,9 +133,15 @@ body {
 }
 
 body {
-  font-family: var(--font-sarabun), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-kanit), var(--font-sarabun), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: 15px;
+  color: #1e293b;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-prompt), var(--font-kanit), ui-sans-serif, system-ui, sans-serif;
 }
 
 a {

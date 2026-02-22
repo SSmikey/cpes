@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Sarabun } from "next/font/google";
+import { Inter, Sarabun, Prompt, Kanit } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -11,6 +11,18 @@ const sarabun = Sarabun({
   variable: "--font-sarabun",
   subsets: ["thai", "latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800"],
+});
+
+const prompt = Prompt({
+  variable: "--font-prompt",
+  subsets: ["thai", "latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+});
+
+const kanit = Kanit({
+  variable: "--font-kanit",
+  subsets: ["thai", "latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -25,7 +37,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="th">
-      <body className={`${inter.variable} ${sarabun.variable} antialiased`}>
+      <body className={`${inter.variable} ${sarabun.variable} ${prompt.variable} ${kanit.variable} antialiased`}>
         {children}
       </body>
     </html>

@@ -14,8 +14,7 @@ import {
   PieChartIcon,
   TrendingUpIcon,
   UserCheckIcon,
-  ArrowRightIcon,
-  ArrowUpRightIcon
+  ArrowRightIcon
 } from "lucide-react";
 import { AdminNav } from "@/components/admin-nav";
 import { Button } from "@/components/Button";
@@ -39,8 +38,6 @@ export default function AdminDashboard() {
   const [selectedFormId, setSelectedFormId] = useState<string>("");
   const [stats, setStats] = useState<StatsData | null>(null);
   const [expandedProject, setExpandedProject] = useState<string | null>(null);
-
-  const loading = selectedFormId !== "" && stats?.form_id !== selectedFormId;
 
   useEffect(() => {
     fetch("/api/forms")
@@ -111,7 +108,7 @@ export default function AdminDashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] font-sarabun selection:bg-indigo-100 pb-24">
+    <div className="min-h-screen bg-[#F8FAFC] font-kanit selection:bg-indigo-100 pb-24">
       <AdminNav actions={navActions} />
 
       <main className="max-w-7xl mx-auto px-6 lg:px-10 pt-12 space-y-16">
@@ -386,21 +383,22 @@ function StatCard({ label, value, suffix, icon: Icon, color, isProgress = false 
   };
 
   return (
-    <Card className="rounded-[28px] border border-white bg-white/70 backdrop-blur-xl shadow-2xl shadow-slate-200/40 group hover:-translate-y-2 transition-all duration-500">
-      <CardContent className="p-7">
-        <div className="flex items-center justify-between mb-5">
-          <div className={`p-4 rounded-[20px] border transition-all group-hover:scale-110 group-hover:shadow-lg duration-500 ${(colors as any)[color]}`}>
-            <Icon className="size-6" />
+    <Card className="rounded-2xl border border-white bg-white/70 backdrop-blur-xl shadow-lg shadow-slate-200/40 group hover:-translate-y-1 transition-all duration-300">
+      <CardContent className="p-5">
+        <div className="flex items-center gap-4">
+          <div className={`p-3 rounded-xl border flex-shrink-0 transition-all group-hover:scale-105 duration-300 ${(colors as any)[color]}`}>
+            <Icon className="size-5" />
           </div>
-          <ArrowUpRightIcon className="size-5 text-slate-300 group-hover:text-indigo-500 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
-        </div>
-        <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] mb-1.5">{label}</p>
-        <div className="flex items-baseline gap-2">
-          <h3 className="text-4xl font-black text-slate-900 tracking-tight font-inter">{value}</h3>
-          <span className="text-sm font-bold text-slate-400 tracking-tight">{suffix}</span>
+          <div className="flex-1 min-w-0">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] truncate">{label}</p>
+            <div className="flex items-baseline gap-1.5 mt-0.5">
+              <h3 className="text-2xl font-black text-slate-900 tracking-tight font-inter">{value}</h3>
+              <span className="text-xs font-bold text-slate-400">{suffix}</span>
+            </div>
+          </div>
         </div>
         {isProgress && (
-          <div className="mt-5 h-2.5 w-full bg-slate-100 rounded-full overflow-hidden border border-slate-200/30">
+          <div className="mt-3 h-2 w-full bg-slate-100 rounded-full overflow-hidden">
             <div className="h-full bg-gradient-to-r from-indigo-500 to-blue-500 rounded-full transition-all duration-1000" style={{ width: `${value}%` }} />
           </div>
         )}
