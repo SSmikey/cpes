@@ -78,26 +78,8 @@ export default function GroupsManagement() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] font-sarabun pb-24">
+    <div className="min-h-screen bg-[#F8FAFC] font-kanit pb-24">
       <AdminNav />
-
-      {/* Header */}
-      <div className="bg-white border-b border-slate-200/60 shadow-sm relative">
-        <div className="absolute top-0 right-0 -mt-24 -mr-24 size-96 bg-indigo-50/40 rounded-full blur-3xl opacity-60 pointer-events-none" />
-        <div className="max-w-4xl mx-auto px-6 lg:px-10 py-12 relative z-10">
-          <div className="flex items-start gap-6">
-            <div className="p-4 bg-indigo-600 rounded-2xl shadow-2xl shadow-indigo-200/50 flex-shrink-0">
-              <Layers className="size-8 text-white" />
-            </div>
-            <div className="space-y-1">
-              <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
-                จัดการ<span className="text-indigo-600">กลุ่มโปรเจค</span>
-              </h1>
-              <p className="text-slate-500 font-medium">เพิ่ม ลบ หรือแก้ไขกลุ่มโปรเจคที่แสดงในหน้าหลัก</p>
-            </div>
-          </div>
-        </div>
-      </div>
 
       <main className="max-w-4xl mx-auto px-6 lg:px-10 pt-10 space-y-8">
 

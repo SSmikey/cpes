@@ -503,7 +503,7 @@ export default function StudentPage() {
       </header>
 
       <main style={{ flex: 1 }}>
-        <div style={{ maxWidth: 768, margin: "0 auto", padding: "32px 20px", display: "flex", flexDirection: "column", gap: 24 }}>
+        <div style={{ maxWidth: 960, margin: "0 auto", padding: "40px 28px", display: "flex", flexDirection: "column", gap: 28 }}>
 
           {/* ── Form title + progress ── */}
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -665,10 +665,16 @@ export default function StudentPage() {
 
           {/* ── Project grid ── */}
           <div>
-            <h2 style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>
+            <h2 style={{ fontSize: 12, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 14 }}>
               รายการกลุ่มทั้งหมด
             </h2>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 10 }}>
+            <style>{`
+              .project-card-evaluable:hover {
+                border-color: #5b21b6 !important;
+                box-shadow: 0 0 0 3px rgba(91,33,182,0.12), 0 4px 16px rgba(109,40,217,0.10) !important;
+              }
+            `}</style>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 12 }}>
               {projects.map((project) => {
                 const isOwn = project.id === student.own_group;
                 const isDone = student.evaluated_projects.includes(project.id);
@@ -680,37 +686,38 @@ export default function StudentPage() {
                     key={project.id}
                     disabled={!canEvaluate}
                     onClick={() => canEvaluate && handleSelectProject(project)}
+                    className={canEvaluate ? "project-card-evaluable" : ""}
                     style={{
                       width: "100%",
                       textAlign: "left",
-                      borderRadius: 12,
+                      borderRadius: 14,
                       border: isSelected
                         ? "2px solid #7c3aed"
                         : canEvaluate
-                          ? "1px solid #e2e8f0"
-                          : "1px solid #f1f5f9",
+                          ? "1.5px solid #e2e8f0"
+                          : "1.5px solid #f1f5f9",
                       background: isSelected
                         ? "linear-gradient(135deg, #faf5ff, #ede9fe22)"
                         : canEvaluate
                           ? "#fff"
                           : "#f8fafc",
-                      padding: "14px 16px",
+                      padding: "18px 20px",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "space-between",
-                      gap: 10,
+                      gap: 12,
                       cursor: canEvaluate ? "pointer" : "default",
                       opacity: (!canEvaluate && !isOwn && !isDone) ? 0.5 : 1,
                       boxShadow: isSelected
                         ? "0 4px 16px rgba(109,40,217,0.14)"
                         : canEvaluate
-                          ? "0 1px 4px rgba(0,0,0,0.04)"
+                          ? "0 1px 4px rgba(0,0,0,0.05)"
                           : "none",
-                      transition: "all 0.15s ease",
+                      transition: "all 0.18s ease",
                     }}
                   >
                     <span style={{
-                      fontSize: 14, fontWeight: 600,
+                      fontSize: 15, fontWeight: 600,
                       color: isSelected ? "#7c3aed" : "#1e293b",
                     }}>
                       {project.name}
@@ -723,12 +730,12 @@ export default function StudentPage() {
                         <span style={badgeSuccessStyle}>✓ ประเมินแล้ว</span>
                       )}
                       {canEvaluate && !isSelected && (
-                        <span style={{ fontSize: 11, color: "#94a3b8" }}>คลิกเพื่อประเมิน →</span>
+                        <span style={{ fontSize: 12, color: "#94a3b8" }}>คลิกเพื่อประเมิน →</span>
                       )}
                       {isSelected && (
                         <span style={{
-                          fontSize: 11, fontWeight: 600, color: "#7c3aed",
-                          background: "#ede9fe", borderRadius: 6, padding: "2px 8px",
+                          fontSize: 12, fontWeight: 600, color: "#7c3aed",
+                          background: "#ede9fe", borderRadius: 6, padding: "3px 10px",
                         }}>กำลังประเมิน</span>
                       )}
                       {isDeadlinePassed && !isOwn && !isDone && (

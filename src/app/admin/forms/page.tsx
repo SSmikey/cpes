@@ -2,20 +2,13 @@
 
 import { useState, useEffect } from "react";
 import type { EvaluationForm, Question } from "@/types";
-import { ClipboardList, PlusIcon, CopyIcon, Edit3Icon, ChevronDownIcon, ClockIcon, Trash2Icon, Activity, ArrowUpRight } from "lucide-react";
+import { PlusIcon, CopyIcon, Edit3Icon, ChevronDownIcon, ClockIcon, Trash2Icon, Activity, ArrowUpRight } from "lucide-react";
 import { AdminNav } from "@/components/admin-nav";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { Label } from "@/components/Label";
 import { Textarea } from "@/components/Textarea";
 import { Switch } from "@/components/Switch";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/Card";
 import { Badge } from "@/components/Badge";
 import {
   Dialog,
@@ -178,50 +171,29 @@ export default function FormManagement() {
     setTimeout(() => setDeadlineSaved(null), 2000);
   };
 
+  const navActions = (
+    <Button
+      onClick={() => setShowNewForm(true)}
+      className="h-10 px-6 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white shadow-lg shadow-slate-200 border-0 font-semibold tracking-tight transition-all active:scale-95"
+    >
+      <PlusIcon className="mr-2 size-4 stroke-[2.5]" /> สร้างแบบประเมินใหม่
+    </Button>
+  );
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-muted/40 flex flex-col">
-        <AdminNav />
+      <div className="min-h-screen bg-slate-50/50 font-kanit flex flex-col">
+        <AdminNav actions={navActions} />
         <main className="flex-1 flex items-center justify-center">
-          <p className="text-muted-foreground text-sm">กำลังโหลด...</p>
+          <p className="text-slate-400 text-sm">กำลังโหลด...</p>
         </main>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50/50 font-sans selection:bg-indigo-100 pb-24 overflow-x-hidden">
-      <AdminNav />
-
-      {/* Hero Header Section */}
-      <div className="bg-white border-b border-slate-200 shadow-sm relative overflow-hidden">
-        <div className="absolute top-0 right-0 -mt-24 -mr-24 size-96 bg-indigo-50/50 rounded-full blur-3xl opacity-60" />
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-10 relative z-10">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-            <div className="flex items-start gap-5">
-              <div className="p-4 bg-indigo-600 rounded-2xl shadow-xl shadow-indigo-100 font-bold">
-                <ClipboardList className="size-8 text-white" />
-              </div>
-              <div className="space-y-1">
-                <h1 className="text-3xl font-black text-slate-900 tracking-tight">
-                  จัดการแบบประเมิน
-                </h1>
-                <div className="flex items-center gap-2 text-slate-500 font-medium">
-                  <ClockIcon className="size-4 text-indigo-500" />
-                  <span>สร้าง แก้ไข และตั้งค่าช่วงเวลาการประเมิน</span>
-                </div>
-              </div>
-            </div>
-
-            <Button
-              onClick={() => setShowNewForm(true)}
-              className="h-12 px-8 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white shadow-lg shadow-slate-200 border-0 font-black tracking-tight transition-all active:scale-95"
-            >
-              <PlusIcon className="mr-2 size-5 stroke-[3]" /> สร้างแบบระเมินใหม่
-            </Button>
-          </div>
-        </div>
-      </div>
+    <div className="min-h-screen bg-slate-50/50 font-kanit selection:bg-indigo-100 pb-24 overflow-x-hidden">
+      <AdminNav actions={navActions} />
 
       <main className="max-w-7xl mx-auto px-6 lg:px-12 pt-12 space-y-8 animate-in fade-in fill-mode-both duration-700">
 
