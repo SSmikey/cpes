@@ -384,16 +384,16 @@ function StatCard({ label, value, suffix, icon: Icon, color, isProgress = false 
 
   return (
     <Card className="rounded-2xl border border-white bg-white/70 backdrop-blur-xl shadow-lg shadow-slate-200/40 group hover:-translate-y-1 transition-all duration-300">
-      <CardContent className="p-5">
+      <CardContent className="px-5 pt-6 pb-5">
         <div className="flex items-center gap-4">
           <div className={`p-3 rounded-xl border flex-shrink-0 transition-all group-hover:scale-105 duration-300 ${(colors as any)[color]}`}>
             <Icon className="size-5" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] truncate">{label}</p>
-            <div className="flex items-baseline gap-1.5 mt-0.5">
-              <h3 className="text-2xl font-black text-slate-900 tracking-tight font-inter">{value}</h3>
-              <span className="text-xs font-bold text-slate-400">{suffix}</span>
+            <p className="text-sm font-medium text-slate-500 truncate">{label}</p>
+            <div className="flex items-baseline gap-1.5 mt-1">
+              <h3 className="text-2xl font-semibold text-slate-800 tracking-tight font-inter">{value}</h3>
+              <span className="text-base font-medium text-slate-500">{suffix}</span>
             </div>
           </div>
         </div>
