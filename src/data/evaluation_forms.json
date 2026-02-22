@@ -2,7 +2,7 @@
   {
     "form_id": "form_2026",
     "title": "แบบประเมินโปรเจคปี 2569",
-    "active": false,
+    "active": true,
     "scale": {
       "min": 1,
       "max": 5
@@ -13,7 +13,7 @@
         "id": "q1",
         "text": "ความชัดเจนของแนวคิดและวัตถุประสงค์โครงงาน",
         "order": 1,
-        "active": false
+        "active": true
       },
       {
         "id": "q2",
@@ -44,7 +44,7 @@
   {
     "form_id": "form_1771387856723",
     "title": "แบบประเมินวัดความหล่อเท่",
-    "active": true,
+    "active": false,
     "scale": {
       "min": 1,
       "max": 5

@@ -15,6 +15,8 @@ export async function POST(req: NextRequest) {
 
   const existing = getStudentById(String(student_id));
   if (existing) {
+    existing.own_group = String(own_group);
+    upsertStudent(existing);
     return NextResponse.json({ student: existing });
   }
 
