@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { ReactNode } from "react";
 
 import { LayoutDashboard, ClipboardList, Layers, ArrowLeft } from "lucide-react";
 
-export function AdminNav() {
+export function AdminNav({ actions }: { actions?: ReactNode }) {
   const pathname = usePathname();
 
   const links = [
@@ -16,8 +17,8 @@ export function AdminNav() {
 
   return (
     <div className="w-full bg-white/80 backdrop-blur-xl border-b border-indigo-50/50 shadow-sm sticky top-0 z-50">
-      <nav className="max-w-[1920px] mx-auto h-20 px-6 md:px-12 flex items-center justify-between">
-        <div className="flex items-center gap-10">
+      <nav className="max-w-[1920px] mx-auto h-20 px-6 md:px-12 flex items-center justify-between gap-6">
+        <div className="flex items-center gap-10 shrink-0">
           {/* Logo Section */}
           <Link href="/admin" className="flex items-center hover:opacity-90 transition-opacity">
             <div className="size-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-black text-2xl shadow-indigo-200 shadow-md">
@@ -54,8 +55,15 @@ export function AdminNav() {
           </div>
         </div>
 
+        {/* Center / Page Actions */}
+        {actions && (
+          <div className="flex-1 flex items-center justify-end gap-3">
+            {actions}
+          </div>
+        )}
+
         {/* Right Side Actions */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 shrink-0">
           <Link
             href="/"
             className="group flex items-center gap-3 pl-2 pr-5 py-2 rounded-xl bg-white border border-slate-200/60 shadow-sm hover:border-indigo-200 hover:shadow-md hover:shadow-indigo-100/30 transition-all duration-300"

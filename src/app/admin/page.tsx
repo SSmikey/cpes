@@ -4,9 +4,7 @@ import { useState, useEffect, Fragment } from "react";
 import type { EvaluationForm, ProjectStat, StudentMonitor } from "@/types";
 import {
   ChevronDownIcon,
-  ChevronUpIcon,
   DownloadIcon,
-  LayoutDashboardIcon,
   TrophyIcon,
   UsersIcon,
   ActivityIcon,
@@ -76,70 +74,45 @@ export default function AdminDashboard() {
     : 0;
   const totalEvaluations = stats?.ranking.reduce((acc, r) => acc + r.evaluator_count, 0) || 0;
 
-  return (
-    <div className="min-h-screen bg-[#F8FAFC] font-sarabun selection:bg-indigo-100 pb-24">
-      <AdminNav />
-
-      {/* Hero Header Section */}
-      <div className="bg-white border-b border-slate-200/60 shadow-sm relative">
-        <div className="absolute top-0 right-0 -mt-24 -mr-24 size-96 bg-indigo-50/40 rounded-full blur-3xl opacity-60" />
-        <div className="absolute bottom-0 left-0 -mb-24 -ml-24 size-96 bg-blue-50/40 rounded-full blur-3xl opacity-60" />
-
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-12 relative z-10">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-10">
-            <div className="flex items-start gap-6">
-              <div className="p-4 bg-indigo-600 rounded-2xl shadow-2xl shadow-indigo-200/50 flex-shrink-0">
-                <LayoutDashboardIcon className="size-8 text-white" />
-              </div>
-              <div className="space-y-2">
-                <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
-                  Admin <span className="text-indigo-600">Dashboard</span>
-                </h1>
-                <div className="flex items-center gap-2.5 text-slate-500 font-medium">
-                  <div className="size-2 bg-emerald-500 rounded-full animate-pulse" />
-                  <span className="text-sm">ระบบติดตามและประมวลผลคะแนนโครงการ</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-4 bg-slate-50/50 p-2 rounded-[24px] border border-slate-100 shadow-inner">
-              <div className="flex items-center gap-3 px-4">
-                <div className="p-2.5 bg-indigo-100/50 rounded-xl text-indigo-600">
-                  <FileTextIcon className="size-5" />
-                </div>
-                <div className="w-72">
-                  <Select
-                    value={selectedFormId}
-                    onChange={(e: any) => setSelectedFormId(e.target.value)}
-                    placeholder="เลือกแบบประเมิน..."
-                  >
-                    {forms.map((f) => (
-                      <SelectItem key={f.form_id} value={f.form_id}>
-                        {f.title}
-                      </SelectItem>
-                    ))}
-                  </Select>
-                </div>
-              </div>
-
-              <div className="h-10 w-px bg-slate-200/60 hidden md:block" />
-
-              <div className="flex items-center gap-3 px-2">
-                <Button
-                  onClick={handleExportCSV}
-                  disabled={!selectedFormId}
-                  variant="outline"
-                  size="lg"
-                  className="rounded-2xl border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 text-slate-600 font-bold px-6 h-11 transition-all shadow-sm active:scale-95"
-                >
-                  <DownloadIcon className="size-4 mr-2" />
-                  Export Data
-                </Button>
-              </div>
-            </div>
-          </div>
+  const navActions = (
+    <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3">
+        <div className="p-2 bg-indigo-100/50 rounded-xl text-indigo-600">
+          <FileTextIcon className="size-4" />
+        </div>
+        <div className="w-64">
+          <Select
+            value={selectedFormId}
+            onChange={(e: any) => setSelectedFormId(e.target.value)}
+            placeholder="เลือกแบบประเมิน..."
+          >
+            {forms.map((f) => (
+              <SelectItem key={f.form_id} value={f.form_id}>
+                {f.title}
+              </SelectItem>
+            ))}
+          </Select>
         </div>
       </div>
+
+      <div className="h-8 w-px bg-slate-200/60" />
+
+      <Button
+        onClick={handleExportCSV}
+        disabled={!selectedFormId}
+        variant="outline"
+        size="lg"
+        className="rounded-2xl border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 text-slate-600 font-bold px-5 h-10 transition-all shadow-sm active:scale-95"
+      >
+        <DownloadIcon className="size-4 mr-2" />
+        Export Data
+      </Button>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-[#F8FAFC] font-sarabun selection:bg-indigo-100 pb-24">
+      <AdminNav actions={navActions} />
 
       <main className="max-w-7xl mx-auto px-6 lg:px-10 pt-12 space-y-16">
 
