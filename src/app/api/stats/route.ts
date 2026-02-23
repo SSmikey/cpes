@@ -13,15 +13,15 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const form = getFormById(form_id);
+  const form = await getFormById(form_id);
   if (!form) {
     return NextResponse.json({ error: "ไม่พบ form" }, { status: 404 });
   }
 
-  const projects = getProjects();
-  const projectStats = calcAllProjectStats(form, projects);
+  const projects = await getProjects();
+  const projectStats = await calcAllProjectStats(form, projects);
   const ranking = calcRanking(projectStats);
-  const studentMonitor = calcStudentMonitor(form_id, projects.length);
+  const studentMonitor = await calcStudentMonitor(form_id, projects.length);
 
   return NextResponse.json({
     form_id,

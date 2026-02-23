@@ -13,10 +13,10 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const existing = getStudentById(String(student_id));
+  const existing = await getStudentById(String(student_id));
   if (existing) {
     existing.own_group = String(own_group);
-    upsertStudent(existing);
+    await upsertStudent(existing);
     return NextResponse.json({ student: existing });
   }
 
@@ -29,6 +29,6 @@ export async function POST(req: NextRequest) {
     created_at: new Date().toISOString(),
   };
 
-  upsertStudent(student);
+  await upsertStudent(student);
   return NextResponse.json({ student }, { status: 201 });
 }

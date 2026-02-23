@@ -13,13 +13,13 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const form = getFormById(form_id);
+  const form = await getFormById(form_id);
   if (!form) {
     return NextResponse.json({ error: "ไม่พบ form" }, { status: 404 });
   }
 
-  const projects = getProjects();
-  const stats = calcAllProjectStats(form, projects);
+  const projects = await getProjects();
+  const stats = await calcAllProjectStats(form, projects);
 
   // สร้าง CSV headers
   const activeQuestions = form.questions

@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
   }
 
   // 1. ตรวจ active form
-  const form = getActiveForm();
+  const form = await getActiveForm();
   if (!form) {
     return NextResponse.json(
       { error: "ไม่พบแบบประเมินที่เปิดใช้งาน" },
@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
   }
 
   // 3. ตรวจ student มีอยู่จริง
-  const student = getStudentById(String(student_id));
+  const student = await getStudentById(String(student_id));
   if (!student) {
     return NextResponse.json(
       { error: "ไม่พบข้อมูลนักศึกษา กรุณาลงทะเบียนก่อน" },
@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
   }
 
   // 5. ห้ามประเมินซ้ำ
-  if (hasEvaluated(String(student_id), String(project_id), form.form_id)) {
+  if (await hasEvaluated(String(student_id), String(project_id), form.form_id)) {
     return NextResponse.json(
       { error: "คุณได้ประเมินกลุ่มนี้ไปแล้ว" },
       { status: 400 }
@@ -103,14 +103,14 @@ export async function POST(req: NextRequest) {
     submitted_at: new Date().toISOString(),
   };
 
-  addEvaluation(evaluation);
+  await addEvaluation(evaluation);
 
   // อัปเดต evaluated_projects ของ student
   const updatedStudent = {
     ...student,
     evaluated_projects: [...student.evaluated_projects, String(project_id)],
   };
-  upsertStudent(updatedStudent);
+  await upsertStudent(updatedStudent);
 
   return NextResponse.json({ success: true, evaluation }, { status: 201 });
 }
