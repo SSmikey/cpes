@@ -37,7 +37,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="th">
-      <body className={`${inter.variable} ${sarabun.variable} ${prompt.variable} ${kanit.variable} antialiased`}>
+      <body className={`${inter.variable} ${sarabun.variable} ${prompt.variable} ${kanit.variable} antialiased`} suppressHydrationWarning>
         {children}
       </body>
     </html>

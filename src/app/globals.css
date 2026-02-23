@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "tw-animate-css";
+@import "./tw-animate.css";
 
 /* shadcn/dist/tailwind.css — inlined (Turbopack does not support "style" export condition) */
 @theme inline {
