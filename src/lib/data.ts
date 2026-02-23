@@ -1,94 +1,160 @@
-import fs from "fs";
-import path from "path";
+import { connectDB } from "@/lib/mongodb";
+import ProjectModel from "@/models/Project";
+import StudentModel from "@/models/Student";
+import EvaluationFormModel from "@/models/EvaluationForm";
+import EvaluationModel from "@/models/Evaluation";
 import type { Project, Student, EvaluationForm, Evaluation } from "@/types";
 
-const DATA_DIR = path.join(process.cwd(), "src", "data");
+// ─── helpers ──────────────────────────────────────────────────────────────────
 
-function readJson<T>(filename: string): T {
-  const filePath = path.join(DATA_DIR, filename);
-  const raw = fs.readFileSync(filePath, "utf-8");
-  return JSON.parse(raw) as T;
+function toProject(doc: Record<string, unknown>): Project {
+  return {
+    id: doc.id as string,
+    name: doc.name as string,
+  };
 }
 
-function writeJson<T>(filename: string, data: T): void {
-  const filePath = path.join(DATA_DIR, filename);
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf-8");
+function toStudent(doc: Record<string, unknown>): Student {
+  return {
+    student_id: doc.student_id as string,
+    name: doc.name as string,
+    year: doc.year as number,
+    own_group: doc.own_group as string,
+    evaluated_projects: (doc.evaluated_projects as string[]) ?? [],
+    created_at:
+      doc.created_at instanceof Date
+        ? doc.created_at.toISOString()
+        : String(doc.created_at),
+  };
 }
 
-// Projects
-export function getProjects(): Project[] {
-  return readJson<Project[]>("projects.json");
+function toForm(doc: Record<string, unknown>): EvaluationForm {
+  const questions = (doc.questions as Array<Record<string, unknown>>) ?? [];
+  return {
+    form_id: doc.form_id as string,
+    title: doc.title as string,
+    active: doc.active as boolean,
+    scale: doc.scale as { min: number; max: number },
+    deadline: doc.deadline
+      ? new Date(doc.deadline as string | Date).toISOString()
+      : null,
+    questions: questions.map((q) => ({
+      id: q.id as string,
+      text: q.text as string,
+      order: q.order as number,
+      active: q.active as boolean,
+    })),
+  };
 }
 
-export function saveProjects(projects: Project[]): void {
-  writeJson("projects.json", projects);
+function toEvaluation(doc: Record<string, unknown>): Evaluation {
+  const raw = doc.answers;
+  const answers: Record<string, number> =
+    raw instanceof Map
+      ? Object.fromEntries(raw)
+      : (raw as Record<string, number>);
+  return {
+    evaluation_id: doc.evaluation_id as string,
+    form_id: doc.form_id as string,
+    student_id: doc.student_id as string,
+    project_id: doc.project_id as string,
+    answers,
+    submitted_at:
+      doc.submitted_at instanceof Date
+        ? doc.submitted_at.toISOString()
+        : String(doc.submitted_at),
+  };
 }
 
-// Students
-export function getStudents(): Student[] {
-  return readJson<Student[]>("students.json");
+// ─── Projects ─────────────────────────────────────────────────────────────────
+
+export async function getProjects(): Promise<Project[]> {
+  await connectDB();
+  const docs = await ProjectModel.find({}).lean();
+  return docs.map((d) => toProject(d as unknown as Record<string, unknown>));
 }
 
-export function saveStudents(students: Student[]): void {
-  writeJson("students.json", students);
+// ─── Students ─────────────────────────────────────────────────────────────────
+
+export async function getStudents(): Promise<Student[]> {
+  await connectDB();
+  const docs = await StudentModel.find({}).lean();
+  return docs.map((d) => toStudent(d as unknown as Record<string, unknown>));
 }
 
-export function getStudentById(student_id: string): Student | undefined {
-  return getStudents().find((s) => s.student_id === student_id);
+export async function getStudentById(student_id: string): Promise<Student | undefined> {
+  await connectDB();
+  const doc = await StudentModel.findOne({ student_id }).lean();
+  return doc ? toStudent(doc as unknown as Record<string, unknown>) : undefined;
 }
 
-export function upsertStudent(student: Student): void {
-  const students = getStudents();
-  const index = students.findIndex((s) => s.student_id === student.student_id);
-  if (index === -1) {
-    students.push(student);
-  } else {
-    students[index] = student;
-  }
-  saveStudents(students);
+export async function upsertStudent(student: Student): Promise<void> {
+  await connectDB();
+  await StudentModel.findOneAndUpdate(
+    { student_id: student.student_id },
+    {
+      $set: {
+        name: student.name,
+        year: student.year,
+        own_group: student.own_group,
+        evaluated_projects: student.evaluated_projects,
+        created_at: new Date(student.created_at),
+      },
+    },
+    { upsert: true, new: true }
+  );
 }
 
-// Evaluation Forms
-export function getForms(): EvaluationForm[] {
-  return readJson<EvaluationForm[]>("evaluation_forms.json");
+// ─── Evaluation Forms ─────────────────────────────────────────────────────────
+
+export async function getForms(): Promise<EvaluationForm[]> {
+  await connectDB();
+  const docs = await EvaluationFormModel.find({}).lean();
+  return docs.map((d) => toForm(d as unknown as Record<string, unknown>));
 }
 
-export function saveForms(forms: EvaluationForm[]): void {
-  writeJson("evaluation_forms.json", forms);
+export async function getActiveForm(): Promise<EvaluationForm | undefined> {
+  await connectDB();
+  const doc = await EvaluationFormModel.findOne({ active: true }).lean();
+  return doc ? toForm(doc as unknown as Record<string, unknown>) : undefined;
 }
 
-export function getActiveForm(): EvaluationForm | undefined {
-  return getForms().find((f) => f.active === true);
+export async function getFormById(form_id: string): Promise<EvaluationForm | undefined> {
+  await connectDB();
+  const doc = await EvaluationFormModel.findOne({ form_id }).lean();
+  return doc ? toForm(doc as unknown as Record<string, unknown>) : undefined;
 }
 
-export function getFormById(form_id: string): EvaluationForm | undefined {
-  return getForms().find((f) => f.form_id === form_id);
+// ─── Evaluations ──────────────────────────────────────────────────────────────
+
+export async function getEvaluations(): Promise<Evaluation[]> {
+  await connectDB();
+  const docs = await EvaluationModel.find({}).lean();
+  return docs.map((d) => toEvaluation(d as unknown as Record<string, unknown>));
 }
 
-// Evaluations
-export function getEvaluations(): Evaluation[] {
-  return readJson<Evaluation[]>("evaluations.json");
+export async function addEvaluation(evaluation: Evaluation): Promise<void> {
+  await connectDB();
+  await EvaluationModel.create({
+    evaluation_id: evaluation.evaluation_id,
+    form_id: evaluation.form_id,
+    student_id: evaluation.student_id,
+    project_id: evaluation.project_id,
+    answers: new Map(Object.entries(evaluation.answers)),
+    submitted_at: new Date(evaluation.submitted_at),
+  });
 }
 
-export function saveEvaluations(evaluations: Evaluation[]): void {
-  writeJson("evaluations.json", evaluations);
-}
-
-export function addEvaluation(evaluation: Evaluation): void {
-  const evaluations = getEvaluations();
-  evaluations.push(evaluation);
-  saveEvaluations(evaluations);
-}
-
-export function hasEvaluated(
+export async function hasEvaluated(
   student_id: string,
   project_id: string,
   form_id: string
-): boolean {
-  return getEvaluations().some(
-    (e) =>
-      e.student_id === student_id &&
-      e.project_id === project_id &&
-      e.form_id === form_id
-  );
+): Promise<boolean> {
+  await connectDB();
+  const count = await EvaluationModel.countDocuments({
+    student_id,
+    project_id,
+    form_id,
+  });
+  return count > 0;
 }
