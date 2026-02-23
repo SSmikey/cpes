@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import type { EvaluationForm, Question } from "@/types";
-import { PlusIcon, CopyIcon, Edit3Icon, ChevronDownIcon, ClockIcon, Trash2Icon, Activity, ArrowUpRight } from "lucide-react";
+import { PlusIcon, CopyIcon, Edit3Icon, ChevronDownIcon, ClockIcon, Trash2Icon, Activity, ArrowUpRight, ClipboardIcon } from "lucide-react";
 import { AdminNav } from "@/components/admin-nav";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
@@ -201,7 +201,7 @@ export default function FormManagement() {
         {forms.length === 0 ? (
           <div className="bg-white/70 backdrop-blur-2xl rounded-none border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-24 text-center flex flex-col items-center group">
             <div className="size-24 rounded-[2rem] bg-indigo-50 flex items-center justify-center mb-6 border border-indigo-100/50 shadow-inner group-hover:scale-110 transition-transform duration-500">
-              <ClipboardList className="size-12 text-indigo-200 stroke-[1.5]" />
+              <ClipboardIcon className="size-12 text-indigo-200 stroke-[1.5]" />
             </div>
             <h3 className="text-xl font-bold text-slate-800 mb-2">ยังไม่มีแบบประเมิน</h3>
             <p className="text-slate-500 font-medium max-w-xs">

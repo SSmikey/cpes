@@ -36,7 +36,7 @@ export async function PUT(
       const existing = formDoc.questions.find((q) => q.id === incoming.id);
       if (existing) {
         return {
-          ...existing.toObject(),
+          id: existing.id,
           text: incoming.text ?? existing.text,
           order: incoming.order ?? existing.order,
           active: incoming.active ?? existing.active,
@@ -65,7 +65,7 @@ export async function PUT(
           return q.id in answers;
         });
       })
-      .map((q) => ({ ...q.toObject(), active: false }));
+      .map((q) => ({ id: q.id, text: q.text, order: q.order, active: false }));
 
     formDoc.questions = [
       ...processedQuestions,

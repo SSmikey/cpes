@@ -6,20 +6,24 @@ if (!MONGODB_URI) {
   throw new Error("Please define the MONGODB_URI environment variable in .env.local");
 }
 
-// Use a module-level cache to reuse the connection across hot reloads in development
-let cached = (global as NodeJS.Global & { mongoose?: { conn: typeof mongoose | null; promise: Promise<typeof mongoose> | null } }).mongoose;
+type MongooseCache = { conn: typeof mongoose | null; promise: Promise<typeof mongoose> | null };
 
-if (!cached) {
-  cached = (global as NodeJS.Global & { mongoose?: { conn: typeof mongoose | null; promise: Promise<typeof mongoose> | null } }).mongoose = { conn: null, promise: null };
+declare global {
+  // eslint-disable-next-line no-var
+  var mongoose: MongooseCache | undefined;
 }
 
-export async function connectDB() {
-  if (cached!.conn) return cached!.conn;
+// Use a module-level cache to reuse the connection across hot reloads in development
+let cached: MongooseCache = global.mongoose ?? { conn: null, promise: null };
+global.mongoose = cached;
 
-  if (!cached!.promise) {
-    cached!.promise = mongoose.connect(MONGODB_URI, { bufferCommands: false }).then((m) => m);
+export async function connectDB() {
+  if (cached.conn) return cached.conn;
+
+  if (!cached.promise) {
+    cached.promise = mongoose.connect(MONGODB_URI, { bufferCommands: false }).then((m) => m);
   }
 
-  cached!.conn = await cached!.promise;
-  return cached!.conn;
+  cached.conn = await cached.promise;
+  return cached.conn;
 }
