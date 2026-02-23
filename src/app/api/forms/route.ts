@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getForms, saveForms } from "@/lib/data";
-import type { EvaluationForm, Question } from "@/types";
+import { connectDB } from "@/lib/mongodb";
+import { getForms } from "@/lib/data";
+import EvaluationFormModel from "@/models/EvaluationForm";
+import type { Question } from "@/types";
 
 export async function GET() {
-  const forms = getForms();
+  const forms = await getForms();
   return NextResponse.json({ forms });
 }
 
@@ -23,16 +25,12 @@ export async function POST(req: NextRequest) {
     typeof scale.max !== "number" ||
     scale.min >= scale.max
   ) {
-    return NextResponse.json(
-      { error: "scale ไม่ถูกต้อง" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "scale ไม่ถูกต้อง" }, { status: 400 });
   }
 
-  const forms = getForms();
+  await connectDB();
   const form_id = `form_${Date.now()}`;
-
-  const newForm: EvaluationForm = {
+  const newForm = {
     form_id,
     title: String(title),
     active: false,
@@ -46,8 +44,6 @@ export async function POST(req: NextRequest) {
     })),
   };
 
-  forms.push(newForm);
-  saveForms(forms);
-
+  await EvaluationFormModel.create(newForm);
   return NextResponse.json({ form: newForm }, { status: 201 });
 }

@@ -62,19 +62,8 @@ export default function StudentPage() {
       try {
         setError(""); // Clear previous errors
 
-        // Fetch staff groups and project groups concurrently
-        const [groupsRes, projectsRes] = await Promise.all([
-          fetch("/api/groups"),
-          fetch("/api/projects") // Fetch project list for student dropdown
-        ]);
-
-        // Process staff groups (for staff form)
-        if (groupsRes.ok) {
-          const groupsData = await groupsRes.json();
-          if (Array.isArray(groupsData.groups)) {
-            setGroups(groupsData.groups);
-          }
-        }
+        // Fetch project groups for student form
+        const projectsRes = await fetch("/api/projects");
 
         // Process project groups (for student form)
         if (!projectsRes.ok) {
@@ -144,7 +133,7 @@ export default function StudentPage() {
     }
 
     try {
-      const res = await fetch('/api/staff-login', {
+      const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: staffForm.username, password: staffForm.password }),

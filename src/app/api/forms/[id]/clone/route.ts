@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getForms, saveForms } from "@/lib/data";
-import type { EvaluationForm } from "@/types";
+import { connectDB } from "@/lib/mongodb";
+import EvaluationFormModel from "@/models/EvaluationForm";
 
 export async function POST(
   req: NextRequest,
@@ -8,8 +8,9 @@ export async function POST(
 ) {
   const { id } = await params;
   const body = await req.json();
-  const forms = getForms();
-  const source = forms.find((f) => f.form_id === id);
+
+  await connectDB();
+  const source = await EvaluationFormModel.findOne({ form_id: id }).lean();
 
   if (!source) {
     return NextResponse.json({ error: "ไม่พบ form" }, { status: 404 });
@@ -18,16 +19,15 @@ export async function POST(
   const form_id = `form_${Date.now()}`;
   const newTitle = body.title ?? `${source.title} (copy)`;
 
-  const cloned: EvaluationForm = {
-    ...source,
+  const cloned = {
     form_id,
     title: String(newTitle),
     active: false,
+    scale: source.scale,
+    deadline: source.deadline ?? null,
     questions: source.questions.map((q) => ({ ...q })),
   };
 
-  forms.push(cloned);
-  saveForms(forms);
-
+  await EvaluationFormModel.create(cloned);
   return NextResponse.json({ form: cloned }, { status: 201 });
 }

@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
-import { getProjects, saveProjects } from "@/lib/data";
+import { connectDB } from "@/lib/mongodb";
+import { getProjects } from "@/lib/data";
+import ProjectModel from "@/models/Project";
 
 export async function GET() {
-  const projects = getProjects();
+  const projects = await getProjects();
   return NextResponse.json({ projects });
 }
 
@@ -11,10 +13,8 @@ export async function POST(request: Request) {
   if (!name || !name.trim()) {
     return NextResponse.json({ error: "ชื่อกลุ่มห้ามว่าง" }, { status: 400 });
   }
-  const projects = getProjects();
+  await connectDB();
   const id = `group${Date.now()}`;
-  const newProject = { id, name: name.trim() };
-  projects.push(newProject);
-  saveProjects(projects);
-  return NextResponse.json({ project: newProject }, { status: 201 });
+  await ProjectModel.create({ id, name: name.trim() });
+  return NextResponse.json({ project: { id, name: name.trim() } }, { status: 201 });
 }

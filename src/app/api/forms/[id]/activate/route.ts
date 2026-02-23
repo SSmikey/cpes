@@ -1,25 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getForms, saveForms } from "@/lib/data";
+import { connectDB } from "@/lib/mongodb";
+import EvaluationFormModel from "@/models/EvaluationForm";
 
 export async function POST(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const forms = getForms();
-  const index = forms.findIndex((f) => f.form_id === id);
 
-  if (index === -1) {
+  await connectDB();
+  const formExists = await EvaluationFormModel.exists({ form_id: id });
+
+  if (!formExists) {
     return NextResponse.json({ error: "ไม่พบ form" }, { status: 404 });
   }
 
   // Auto deactivate ทุก form ก่อน แล้ว activate เฉพาะตัวที่เลือก
-  const updated = forms.map((f) => ({
-    ...f,
-    active: f.form_id === id,
-  }));
+  await EvaluationFormModel.updateMany({}, { $set: { active: false } });
+  await EvaluationFormModel.findOneAndUpdate(
+    { form_id: id },
+    { $set: { active: true } }
+  );
 
-  saveForms(updated);
-
-  return NextResponse.json({ form: updated[index] });
+  const updated = await EvaluationFormModel.findOne({ form_id: id }).lean();
+  return NextResponse.json({ form: updated });
 }
