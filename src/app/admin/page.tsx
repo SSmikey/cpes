@@ -197,23 +197,23 @@ export default function AdminDashboard() {
                             </td>
                             <td className="px-8 py-6">
                               <div className="flex flex-col">
-                                <span className="text-slate-800 font-extrabold text-xl group-hover:text-indigo-600 transition-colors tracking-tight leading-snug">
+                                <span className="text-slate-800 font-semibold text-xl group-hover:text-indigo-600 transition-colors tracking-tight leading-snug">
                                   {row.project_name}
                                 </span>
-                                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-1.5 font-inter">ID: {row.project_id}</span>
+                                <span className="text-[11px] font-medium text-slate-500 uppercase tracking-widest mt-1.5 font-inter">ID: {row.project_id}</span>
                               </div>
                             </td>
                             <td className="px-8 py-6 text-center">
                               <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-200/60 shadow-inner">
                                 <UsersIcon className="size-3.5 text-indigo-400" />
-                                <span className="text-sm font-black text-slate-600 font-inter">{row.evaluator_count}</span>
+                                <span className="text-sm font-semibold text-slate-600 font-inter">{row.evaluator_count}</span>
                               </div>
                             </td>
-                            <td className="px-8 py-6 text-center font-black text-3xl text-slate-900 tracking-tighter font-inter">
+                            <td className="px-8 py-6 text-center font-semibold text-3xl text-slate-800 tracking-tight font-inter">
                               {row.overall_mean.toFixed(2)}
                             </td>
                             <td className="px-8 py-6 text-center">
-                              <span className="text-xs font-bold text-slate-400 bg-slate-50 px-3 py-1 rounded-xl border border-slate-200/50 font-inter">SD: {row.overall_sd.toFixed(2)}</span>
+                              <span className="text-sm font-medium text-slate-500 bg-slate-50 px-3 py-1 rounded-xl border border-slate-200/50 font-inter">SD: {row.overall_sd.toFixed(2)}</span>
                             </td>
                             <td className="px-8 py-6 text-right">
                               <div className={`p-2.5 rounded-xl transition-all duration-300 ${expandedProject === row.project_id ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'text-slate-300 group-hover:text-indigo-500 group-hover:bg-indigo-50'}`}>
@@ -235,15 +235,15 @@ export default function AdminDashboard() {
                                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                     {row.per_question?.map((pq, idx) => (
                                       <div key={idx} className="bg-white p-5 rounded-2xl border border-indigo-100 shadow-sm hover:shadow-md transition-all">
-                                        <p className="text-sm font-bold text-slate-600 mb-4 line-clamp-2 h-10 leading-relaxed">{pq.question_text}</p>
+                                        <p className="text-sm font-medium text-slate-600 mb-4 line-clamp-2 h-10 leading-relaxed">{pq.question_text}</p>
                                         <div className="flex items-end justify-between">
                                           <div className="flex flex-col">
-                                            <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1">Mean Score</span>
-                                            <span className="text-2xl font-black text-indigo-600 tracking-tighter">{pq.mean.toFixed(2)}</span>
+                                            <span className="text-[10px] font-medium text-slate-400 uppercase tracking-widest mb-1">Mean Score</span>
+                                            <span className="text-2xl font-semibold text-indigo-600 tracking-tight font-inter">{pq.mean.toFixed(2)}</span>
                                           </div>
                                           <div className="flex flex-col items-end">
-                                            <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1">Stability (SD)</span>
-                                            <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400 bg-slate-50 px-2.5 py-1 rounded-full border border-slate-100">
+                                            <span className="text-[10px] font-medium text-slate-400 uppercase tracking-widest mb-1">Stability (SD)</span>
+                                            <div className="flex items-center gap-1.5 text-sm font-medium text-slate-500 bg-slate-50 px-2.5 py-1 rounded-full border border-slate-100 font-inter">
                                               <span>{pq.sd.toFixed(2)}</span>
                                             </div>
                                           </div>
@@ -277,8 +277,8 @@ export default function AdminDashboard() {
                 </div>
                 <div className="flex items-center gap-3 bg-white p-1 rounded-2xl border border-slate-200">
                   <div className="flex items-center gap-2 px-3 py-1 bg-white rounded-xl shadow-sm border border-slate-100">
-                    <span className="text-xs font-black text-slate-500">ทั้งหมด</span>
-                    <span className="text-lg font-black text-indigo-600">{totalStudents}</span>
+                    <span className="text-xs font-medium text-slate-500">ทั้งหมด</span>
+                    <span className="text-lg font-semibold text-indigo-600 font-inter">{totalStudents}</span>
                   </div>
                   <Button variant="ghost" size="sm" className="font-bold text-indigo-600 px-4 h-10 hover:bg-indigo-50 rounded-xl">
                     ดูประวัติแบบละเอียด <ArrowRightIcon className="size-4 ml-1.5" />
@@ -304,10 +304,10 @@ export default function AdminDashboard() {
                         const isComplete = s.complete;
                         return (
                           <tr key={s.student_id} className="hover:bg-slate-50/50 transition-colors group">
-                            <td className="px-8 py-6 text-sm font-inter font-bold text-slate-400">{s.student_id}</td>
+                            <td className="px-8 py-6 text-sm font-inter font-medium text-slate-500">{s.student_id}</td>
                             <td className="px-8 py-6">
                               <div className="flex flex-col">
-                                <span className="text-slate-800 font-bold text-lg leading-tight tracking-tight">{s.name}</span>
+                                <span className="text-slate-800 font-semibold text-lg leading-tight tracking-tight">{s.name}</span>
                                 <div className="mt-1.5 flex items-center gap-2">
                                   <span className="text-[10px] bg-slate-100 text-slate-500 px-2.5 py-1 rounded-lg font-black border border-slate-200 uppercase tracking-widest font-inter">{s.own_group}</span>
                                 </div>
@@ -315,8 +315,8 @@ export default function AdminDashboard() {
                             </td>
                             <td className="px-8 py-6 text-center">
                               <div className="inline-flex items-baseline gap-1.5">
-                                <span className={`text-2xl font-black font-inter ${s.evaluated_count >= 5 ? 'text-emerald-600' : 'text-slate-800'}`}>{s.evaluated_count}</span>
-                                <span className="text-slate-300 text-sm font-bold font-inter">/ 5</span>
+                                <span className={`text-2xl font-semibold font-inter tracking-tight ${s.evaluated_count >= 5 ? 'text-emerald-600' : 'text-slate-800'}`}>{s.evaluated_count}</span>
+                                <span className="text-base font-medium text-slate-500 font-inter">/ {s.total_to_evaluate}</span>
                               </div>
                             </td>
                             <td className="px-8 py-6">
