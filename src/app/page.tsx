@@ -1,3 +1,5 @@
+"use client";
+
 import dynamic from "next/dynamic";
 
 const StudentPage = dynamic(() => import("./_student-page-client"), {
