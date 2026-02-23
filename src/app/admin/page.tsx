@@ -212,8 +212,8 @@ export default function AdminDashboard() {
                             <td className="px-8 py-6 text-center font-semibold text-3xl text-slate-800 tracking-tight font-inter">
                               {row.overall_mean.toFixed(2)}
                             </td>
-                            <td className="px-8 py-6 text-center">
-                              <span className="text-sm font-medium text-slate-500 bg-slate-50 px-3 py-1 rounded-xl border border-slate-200/50 font-inter">SD: {row.overall_sd.toFixed(2)}</span>
+                            <td className="px-8 py-6 text-center align-middle">
+                              <span className="inline-flex items-center text-sm font-medium text-slate-500 bg-slate-50 px-3 py-1 rounded-xl border border-slate-200/50 font-inter">±{row.overall_sd.toFixed(2)}</span>
                             </td>
                             <td className="px-8 py-6 text-right">
                               <div className={`p-2.5 rounded-xl transition-all duration-300 ${expandedProject === row.project_id ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'text-slate-300 group-hover:text-indigo-500 group-hover:bg-indigo-50'}`}>
